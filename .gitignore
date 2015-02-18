@@ -1,0 +1,20 @@
+**/.DS_Store
+**.orig
+.env
+.env.*
+
+/coverage/
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/db/database.yml
+/log
+/public/system
+/tmp
+/spec/tmp
+
+config/secrets.yml
+
+## Environment normalisation:
+/.bundle
+/vendor/bundle
+
