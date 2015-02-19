@@ -1,0 +1,40 @@
+<div class="editor clearfix">
+  <div class="navs clearfix">
+    <% if @gif.prev %>
+      <nav class="left">
+        <%= link_to "< Prev", gif_path(@gif.prev) %>
+      </nav>
+    <% end %>
+    <% if @gif.next %>
+      <nav class="right">
+         <%= link_to "Next >", gif_path(@gif.next) %>
+      </nav>
+    <% end %>
+  </div>
+
+  <div class="showcase">
+    <%= link_to @gif.url do %>
+      <%= image_tag @gif.url %>
+    <% end %>
+  </div>
+
+  <div class="tags">
+    <%= form_for [@gif, Tag.new] do |f| %>
+      <%= f.text_field :text %>
+    <% end %>
+
+    <% @gif.tags.each do |tag| %>
+      <span class="tag">
+        <%= tag.text %>
+        <%= link_to gif_tag_path(@gif, tag), method: :delete do %>
+          &times;
+        <% end %>
+      </span>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $('#tag_text').focus();
+</script>
+

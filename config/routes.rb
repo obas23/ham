@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  resources :gifs, only: [:index]
+  resources :gifs, only: [:index, :show] do
+    resources :tags, only: [:create, :destroy]
+  end
+
   root 'gifs#index'
 end
 

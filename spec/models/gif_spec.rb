@@ -65,3 +65,26 @@ RSpec.describe Gif, '#thumbnail_url', type: :model do
   end
 end
 
+RSpec.describe Gif, '#next', type: :model do
+  it "returns the next gif" do
+    gif1 = Gif.create! id: "gif1", created_at: Date.today
+    gif2 = Gif.create! id: "gif2", created_at: Date.today + 1.day
+    gif3 = Gif.create! id: "gif3", created_at: Date.today + 2.days
+    expect(gif3.next).to eql gif2
+    expect(gif2.next).to eql gif1
+    expect(gif1.next).to eql nil
+  end
+end
+
+RSpec.describe Gif, '#prev', type: :model do
+  it "returns the previous gif" do
+    gif1 = Gif.create! id: "gif1", created_at: Date.today
+    gif2 = Gif.create! id: "gif2", created_at: Date.today + 1.day
+    gif3 = Gif.create! id: "gif3", created_at: Date.today + 2.days
+    expect(gif1.prev).to eql gif2
+    expect(gif2.prev).to eql gif3
+    expect(gif3.prev).to eql nil
+  end
+end
+
+
