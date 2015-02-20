@@ -1,10 +1,23 @@
-<div class="grid">
+<div class="search">
+  <%= form_tag(root_path, method: "get") do %>
+    <%= text_field_tag(:q, @query) %>
+  <% end %>
+</div>
+
+<ul class="gifs">
   <% @gifs.each do |gif| %>
-    <div class="cell">
+    <li>
       <%= link_to gif_path(gif) do %>
         <%= image_tag gif.thumbnail_url %>
       <% end %>
-    </div>
+    </li>
   <% end %>
-</div>
+</ul>
+
+<script>
+  // Focus search box and move caret to end
+  $("[name='q']").each(function() {
+    $(this).focus().val($(this).val());
+  });
+</script>
 

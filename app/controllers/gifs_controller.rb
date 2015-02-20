@@ -2,10 +2,10 @@ class GifsController < ApplicationController
 
   def index
     @query = params[:q]
-    if @query
-      @gifs = Gif.search(@query)
-    else
+    if @query.blank?
       @gifs = Gif.all
+    else
+      @gifs = Gif.search(@query)
     end
   end
 

@@ -42,7 +42,7 @@ module Gifs
     # Use sql structure format because of non-integer primary keys
     config.active_record.schema_format = :sql
 
-    config.log_level = :info
+    config.log_level = :debug
     config.lograge.enabled = true
   end
 end
