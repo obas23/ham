@@ -14,6 +14,7 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require 'net/http'
 require 'dotenv'
 
 Dotenv.load(
