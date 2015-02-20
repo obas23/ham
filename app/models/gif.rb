@@ -6,11 +6,11 @@ class Gif < ActiveRecord::Base
   default_scope { order('created_at DESC') }
 
   def self.next(date)
-    where("created_at < ?", date).reorder('created_at DESC').limit(1).first
+    where("created_at < ?", date).reorder('created_at DESC').limit(1).first or first
   end
 
   def self.prev(date)
-    where("created_at > ?", date).reorder('created_at ASC').limit(1).first
+    where("created_at > ?", date).reorder('created_at ASC').limit(1).first or last
   end
 
   def url

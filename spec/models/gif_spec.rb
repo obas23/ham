@@ -72,7 +72,7 @@ RSpec.describe Gif, '#next', type: :model do
     gif3 = Gif.create! id: "gif3", created_at: Date.today + 2.days
     expect(gif3.next).to eql gif2
     expect(gif2.next).to eql gif1
-    expect(gif1.next).to eql nil
+    expect(gif1.next).to eql gif3
   end
 end
 
@@ -83,7 +83,7 @@ RSpec.describe Gif, '#prev', type: :model do
     gif3 = Gif.create! id: "gif3", created_at: Date.today + 2.days
     expect(gif1.prev).to eql gif2
     expect(gif2.prev).to eql gif3
-    expect(gif3.prev).to eql nil
+    expect(gif3.prev).to eql gif1
   end
 end
 

@@ -14,6 +14,29 @@
  *= require_self
  */
 
+/*
+turquoise    # 1abc9c
+greensea     # 16a085
+emerald      # 2ecc71
+nephritis    # 27ae60
+peterriver   # 3498db
+belizehole   # 2980b9
+amethyst     # 9b59b6
+wisteria     # 8e44ad
+wetasphalt   # 34495e
+midnightblue # 2c3e50
+sunflower    # f1c40f
+orange       # f39c12
+carrot       # e67e22
+pumpkin      # d35400
+alizarin     # e74c3c
+pomegranate  # c0392b
+clouds       # ecf0f1
+silver       # bdc3c7
+concrete     # 95a5a6
+asbestos     # 7f8c8d
+ */
+
 .clearfix:after {
   visibility: hidden;
   display: block;
@@ -24,6 +47,12 @@
 }
 * html .clearfix             { zoom: 1; } /* IE6 */
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
+.left  { float: left; }
+.right { float: right; }
+.ljust { text-align: left; }
+.cjust { text-align: center; }
+.rjust { text-align: right; }
 
 html, body {
   height: 100%;
@@ -37,23 +66,48 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-  color: #e74c3c;
+  color: #1abc9c;
   text-decoration: none;
   font-weight: bold;
 }
 
 a:hover {
-  color: #c0392b;
+  color: #16a085;
+  text-decoration: underline;
 }
 
 .wrapper {
   margin: 32px;
 }
 
-.left  { float: left; }
-.right { float: right; }
+.container {
+  width: 512px;
+  margin: auto;
+}
+
+nav {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  display: table;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  vertical-align: middle;
+  padding: 8px 0;
+  border: 1px solid #ecf0f1;
+  border-left: 0;
+  border-right: 0;
+}
 
 .grid {
+  width: 1024px;
+  margin: auto;
   text-align: center;
 }
 
@@ -74,51 +128,37 @@ a:hover {
   height: 100%;
 }
 
-.editor {
-  width: 512px;
-}
-
-.navs {
-  margin-bottom: 12px;
-}
-
-.showcase {
+.gif {
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-.showcase img {
+.gif img {
   width: 100%;
   height: auto;
 }
 
-.tags .tag {
-  display: inline-block;
-  margin-right: 12px;
-  line-height: 16px;
-}
-
-.tags .tag a {
-  font-size: 16px;
-}
-
 .tags form {
-  margin: 12px 0;
+  margin-bottom: 16px;
 }
 
 .tags input {
-  width: 512px;
+  width: 100%;
   box-sizing: border-box;
   background: #ecf0f1;
   border: 0;
   font-size: 14px;
   line-height: 1;
-  padding: 12px;
+  padding: 16px 24px;
+  border: 3px solid transparent;
+  color: #7f8c8d;
+  text-transform: uppercase;
 }
 
 .tags input:focus {
   outline: 0 !important;
   outline: none !important;
   box-shadow: none !important;
+  border-color: #bdc3c7;
 }
 

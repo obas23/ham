@@ -1,7 +1,7 @@
 <div class="grid">
   <% @gifs.each do |gif| %>
     <div class="cell">
-      <%= link_to gif.url do %>
+      <%= link_to gif_path(gif) do %>
         <%= image_tag gif.thumbnail_url %>
       <% end %>
     </div>

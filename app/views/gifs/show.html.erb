@@ -1,18 +1,11 @@
-<div class="editor clearfix">
-  <div class="navs clearfix">
-    <% if @gif.prev %>
-      <nav class="left">
-        <%= link_to "< Prev", gif_path(@gif.prev) %>
-      </nav>
-    <% end %>
-    <% if @gif.next %>
-      <nav class="right">
-         <%= link_to "Next >", gif_path(@gif.next) %>
-      </nav>
-    <% end %>
-  </div>
+<div class="container">
+  <nav class="clearfix">
+    <%= link_to "< prev", gif_path(@gif.prev), class: 'left' %>
+    <%= link_to "all", gifs_path %>
+    <%= link_to "next >", gif_path(@gif.next), class: 'right' %>
+  </nav>
 
-  <div class="showcase">
+  <div class="gif">
     <%= link_to @gif.url do %>
       <%= image_tag @gif.url %>
     <% end %>
@@ -20,21 +13,39 @@
 
   <div class="tags">
     <%= form_for [@gif, Tag.new] do |f| %>
-      <%= f.text_field :text %>
+      <%= f.text_field :text, placeholder: "tag..." %>
     <% end %>
 
-    <% @gif.tags.each do |tag| %>
-      <span class="tag">
-        <%= tag.text %>
-        <%= link_to gif_tag_path(@gif, tag), method: :delete do %>
-          &times;
-        <% end %>
-      </span>
-    <% end %>
+    <table>
+      <% @gif.tags.each do |tag| %>
+        <tr>
+          <th class="ljust"><%= link_to tag.text, '#' %></th>
+          <td class="rjust"><%= link_to 'remove', gif_tag_path(@gif, tag), method: :delete %></td>
+        </td>
+        </tr>
+      <% end %>
+    </table>
   </div>
 </div>
 
 <script>
-  $('#tag_text').focus();
+  $(document).keydown(function(e) {
+    // Something has focus. Input, anchor, etc.
+    if ($(':focus').length) return;
+
+    switch(e.which) {
+      case 37: // left
+      window.location.href = "<%= gif_path(@gif.prev) %>";
+      e.preventDefault();
+      break;
+
+      case 39: // right
+      window.location.href = "<%= gif_path(@gif.next) %>";
+      e.preventDefault();
+      break;
+
+      default: return;
+    }
+  });
 </script>
 

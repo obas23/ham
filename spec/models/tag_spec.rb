@@ -16,6 +16,17 @@ RSpec.describe Tag, 'validations', type: :model do
   end
 end
 
+RSpec.describe Tag, '#text=', type: :model do
+  it "lowercases the text" do
+    tag = Tag.new
+    tag.text = "AbCdEfG"
+    expect(tag.text).to eql "abcdefg"
+    tag.save!
+    tag = Tag.find(tag.id)
+    expect(tag.text).to eql "abcdefg"
+  end
+end
+
 RSpec.describe Tag, '#gifs', type: :model do
   it "returns its associated gifs" do
     gif1 = Gif.create! id: "gif1"
