@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe GifsController, '#index', type: :controller do
-  let(:gifs) { double }
+  let(:all_gifs) { double }
+  let(:matching_gifs) { double }
 
   before do
-    allow(Gif).to receive(:all) { gifs }
+    allow(Gif).to receive(:all) { all_gifs }
+    allow(Gif).to receive(:search).with('search term') { matching_gifs }
   end
 
   it "returns http success" do
@@ -12,9 +14,18 @@ RSpec.describe GifsController, '#index', type: :controller do
     expect(response).to have_http_status(:success)
   end
 
-  it "assigns all gifs" do
-    get :index
-    expect(assigns(:gifs)).to eql gifs
+  context "when there is a query present" do
+    it "assigns all gifs" do
+      get :index
+      expect(assigns(:gifs)).to eql all_gifs
+    end
+  end
+
+  context "when there is not a query present" do
+    it "assigns all gifs" do
+      get :index, q: 'search term'
+      expect(assigns(:gifs)).to eql matching_gifs
+    end
   end
 end
 

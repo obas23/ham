@@ -1,4 +1,5 @@
 class TagsController < ApplicationController
+
   def create
     @gif = Gif.find(params[:gif_id])
     @tag = Tag.find_or_create_by text: params[:tag][:text].strip
@@ -16,5 +17,6 @@ class TagsController < ApplicationController
     @gif.tags.delete(@tag)
     redirect_to gif_path(@gif)
   end
+
 end
 
