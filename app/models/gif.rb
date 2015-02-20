@@ -5,6 +5,10 @@ class Gif < ActiveRecord::Base
 
   default_scope { order('created_at DESC') }
 
+  def self.search(q)
+    joins(:tags).merge(Tag.search(q))
+  end
+
   def self.next(date)
     where("created_at < ?", date).reorder('created_at DESC').limit(1).first or first
   end

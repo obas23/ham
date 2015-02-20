@@ -87,4 +87,24 @@ RSpec.describe Gif, '#prev', type: :model do
   end
 end
 
+RSpec.describe Gif, '.search', type: :model do
+  it "returns gifs matching the query" do
+    blue_tag = Tag.create! text: "blue"
+    red_tag = Tag.create! text: "red"
+
+    blue_gif = Gif.create! id: "blue_gif"
+    blue_gif.tags << blue_tag
+
+    red_gif = Gif.create! id: "red_gif"
+    red_gif.tags << red_tag
+
+    blue_and_red_gif = Gif.create! id: "blue_and_red_gif"
+    blue_and_red_gif.tags << blue_tag
+    blue_and_red_gif.tags << red_tag
+
+    expect(Gif.search("blue")).to   match_array [blue_and_red_gif, blue_gif]
+    expect(Gif.search("red")).to    match_array [blue_and_red_gif, red_gif]
+    expect(Gif.search("purple")).to match_array []
+  end
+end
 
