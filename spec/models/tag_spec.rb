@@ -44,3 +44,37 @@ RSpec.describe Tag, '#gifs', type: :model do
   end
 end
 
+RSpec.describe Tag, '.search', type: :model do
+  before do
+    Tag.delete_all
+  end
+
+  it "returns tags matching the query" do
+    tag1 = Tag.create! text: "your awesome tag"
+    tag2 = Tag.create! text: "your"
+    tag3 = Tag.create! text: "awesome"
+    tag4 = Tag.create! text: "tag"
+
+    expect(Tag.search('your')).to match_array [tag2, tag1]
+    expect(Tag.search('awesome')).to match_array [tag3, tag1]
+    expect(Tag.search('tag')).to match_array [tag4, tag1]
+    expect(Tag.search('your awesome tag')).to match_array [tag1]
+  end
+
+  it "returns no results if the query is nil" do
+    expect(Tag.search(nil)).to match_array []
+  end
+
+  it "returns no results if the query is too small" do
+    tag = Tag.create! text: 'abc'
+    expect(Tag.search('')).to match_array []
+    expect(Tag.search('a')).to match_array []
+    expect(Tag.search('ab')).to match_array []
+    expect(Tag.search('abc')).to match_array [tag]
+  end
+
+  it "returns no results when there are no matching tags" do
+    expect(Tag.search('wattt')).to match_array []
+  end
+end
+
