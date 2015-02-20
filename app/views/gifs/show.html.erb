@@ -12,8 +12,8 @@
   </div>
 
   <div class="tags">
-    <%= form_for [@gif, Tag.new] do |f| %>
-      <%= f.text_field :text, placeholder: "tag..." %>
+    <%= form_tag gif_tags_path(@gif), method: "post" do %>
+      <%= text_field_tag :tag, nil, placeholder: "tag..." %>
     <% end %>
 
     <table>

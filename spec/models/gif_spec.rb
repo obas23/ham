@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Gif, 'validations', type: :model do
+  before do
+    Gif.delete_all
+  end
+
   it "validates that it has an id" do
     gif_without_id = Gif.new id: nil
     expect(gif_without_id).to be_invalid
@@ -17,6 +21,10 @@ RSpec.describe Gif, 'validations', type: :model do
 end
 
 RSpec.describe Gif, 'scopes', type: :model do
+  before do
+    Gif.delete_all
+  end
+
   it "orders them newest-first by default" do
     gif1 = Gif.create! id: "gif1"
     gif1.created_at = Date.today - 1.days
@@ -35,6 +43,10 @@ RSpec.describe Gif, 'scopes', type: :model do
 end
 
 RSpec.describe Gif, '#tags', type: :model do
+  before do
+    Gif.delete_all
+  end
+
   it "returns its associated gifs" do
     tag1 = Tag.create! text: "tag1"
     tag2 = Tag.create! text: "tag2"
@@ -51,6 +63,57 @@ RSpec.describe Gif, '#tags', type: :model do
   end
 end
 
+RSpec.describe Gif, 'tag!', type: :model do
+  before do
+    Gif.delete_all
+    Tag.delete_all
+  end
+
+  it "adds the tag" do
+    gif = Gif.create! id: "gif123"
+
+    expect {
+      gif.tag! "tag123"
+    }.to change(gif.tags, :count).by(+1)
+  end
+
+  it "doesn't add the tag when it already has it" do
+    gif = Gif.create! id: "gif123"
+    tag = Tag.create! text: "tag123"
+    gif.tags << tag
+
+    expect {
+      gif.tag! "tag123"
+    }.to change(gif.tags, :count).by(0)
+  end
+end
+
+RSpec.describe Gif, 'tag!', type: :model do
+  before do
+    Gif.delete_all
+    Tag.delete_all
+  end
+
+  it "removes the tag" do
+    gif = Gif.create! id: "gif123"
+    tag = Tag.create! text: "tag123"
+    gif.tags << tag
+
+    expect {
+      gif.untag! tag.id
+    }.to change(gif.tags, :count).by(-1)
+  end
+
+  it "raises when it is an unknown tag" do
+    gif = Gif.create! id: "gif123"
+
+    expect {
+      gif.untag! 0
+    }.to raise_exception
+  end
+end
+
+
 RSpec.describe Gif, '#url', type: :model do
   it "returns its imgur url" do
     gif = Gif.create! id: "ZKy6vCD"
@@ -66,6 +129,10 @@ RSpec.describe Gif, '#thumbnail_url', type: :model do
 end
 
 RSpec.describe Gif, '#next', type: :model do
+  before do
+    Gif.delete_all
+  end
+
   it "returns the next gif" do
     gif1 = Gif.create! id: "gif1", created_at: Date.today
     gif2 = Gif.create! id: "gif2", created_at: Date.today + 1.day
@@ -77,6 +144,10 @@ RSpec.describe Gif, '#next', type: :model do
 end
 
 RSpec.describe Gif, '#prev', type: :model do
+  before do
+    Gif.delete_all
+  end
+
   it "returns the previous gif" do
     gif1 = Gif.create! id: "gif1", created_at: Date.today
     gif2 = Gif.create! id: "gif2", created_at: Date.today + 1.day
@@ -88,6 +159,11 @@ RSpec.describe Gif, '#prev', type: :model do
 end
 
 RSpec.describe Gif, '.search', type: :model do
+  before do
+    Gif.delete_all
+    Tag.delete_all
+  end
+
   it "returns gifs matching the query" do
     blue_tag = Tag.create! text: "blue"
     red_tag = Tag.create! text: "red"

@@ -17,6 +17,16 @@ class Gif < ActiveRecord::Base
     where("created_at > ?", date).reorder('created_at ASC').limit(1).first or last
   end
 
+  def tag!(text)
+    tag = Tag.find_or_create_by! text: text.to_s.strip.downcase
+    tags << tag unless tags.include?(tag)
+  end
+
+  def untag!(tag_id)
+    tag = tags.find(tag_id)
+    tags.delete(tag)
+  end
+
   def url
     "http://i.imgur.com/#{id}.gif"
   end

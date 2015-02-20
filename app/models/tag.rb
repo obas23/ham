@@ -10,7 +10,7 @@ class Tag < ActiveRecord::Base
   end
 
   def text=(text)
-    self[:text] = text.to_s.downcase
+    self[:text] = text.to_s.strip.downcase
   end
 end
 

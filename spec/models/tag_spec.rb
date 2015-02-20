@@ -21,9 +21,18 @@ RSpec.describe Tag, '#text=', type: :model do
     tag = Tag.new
     tag.text = "AbCdEfG"
     expect(tag.text).to eql "abcdefg"
-    tag.save!
-    tag = Tag.find(tag.id)
-    expect(tag.text).to eql "abcdefg"
+  end
+
+  it "strips leading and trailing whitespace" do
+    tag = Tag.new
+    tag.text = "  leading whitespace"
+    expect(tag.text).to eql "leading whitespace"
+
+    tag.text = "trailing whitespace     "
+    expect(tag.text).to eql "trailing whitespace"
+
+    tag.text = "   leading and trailing whitespace   "
+    expect(tag.text).to eql "leading and trailing whitespace"
   end
 end
 
