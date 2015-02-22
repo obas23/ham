@@ -89,6 +89,10 @@ class Tag < Model
     Tag.denormalize(id)
   end
 
+  def to_param
+    id
+  end
+
   def gifs
     $redis.smembers("tag:#{id}:gifs").map { |g| Gif.retrieve(g) }
   end

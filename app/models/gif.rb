@@ -29,6 +29,10 @@ class Gif < Model
     "http://i.imgur.com/#{id}b.gif"
   end
 
+  def to_param
+    id
+  end
+
   def next
     Gif.next(id)
   end
