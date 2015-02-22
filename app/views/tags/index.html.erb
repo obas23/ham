@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="search">
+    <%= form_tag(tags_path, method: "get") do %>
+      <%= text_field_tag(:q, @query) %>
+    <% end %>
+  </div>
+
+  <table>
+    <% @tags.each do |tag| %>
+      <tr>
+        <th class="ljust"><%= link_to tag.text, tag_path(tag) %></th>
+        <td class="rjust"><%= tag.gifs.count %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<script>
+  // Focus search box and move caret to end
+  $("[name='q']").each(function() {
+    $(this).focus().val($(this).val());
+  });
+</script>
+

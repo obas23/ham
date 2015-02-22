@@ -1,5 +1,5 @@
 <div class="search">
-  <%= form_tag(root_path, method: "get") do %>
+  <%= form_tag(gifs_path, method: "get") do %>
     <%= text_field_tag(:q, @query) %>
   <% end %>
 </div>

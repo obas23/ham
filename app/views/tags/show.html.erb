@@ -1,0 +1,18 @@
+<header>
+  <nav class="clearfix">
+    <%= link_to "< tags", tags_path, class: 'left' %>
+    <strong><%= @tag.text %></strong>
+    <%= link_to "all gifs >", gifs_path, class: 'right' %>
+  </nav>
+</header>
+
+<ul class="gifs">
+  <% @gifs.each do |gif| %>
+    <li>
+      <%= link_to gif_path(gif) do %>
+        <%= image_tag gif.thumbnail_url %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+

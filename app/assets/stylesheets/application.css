@@ -107,8 +107,13 @@ input:focus {
   margin: auto;
 }
 
-nav {
+header {
+  padding-bottom: 12px;
   margin-bottom: 16px;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+nav {
   text-align: center;
 }
 
