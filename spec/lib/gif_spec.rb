@@ -21,6 +21,16 @@ RSpec.describe Gif, '.search' do
     expect(Gif.search("red")).to    match_array [blue_and_red_gif, red_gif]
     expect(Gif.search("purple")).to match_array []
   end
+
+  it "returns all gifs when the query is nil or empty" do
+    gif1 = Gif.create "gif1"
+    gif2 = Gif.create "gif2"
+    gif3 = Gif.create "gif3"
+
+    expect(Gif.search(nil)).to match_array  [gif1, gif2, gif3]
+    expect(Gif.search('')).to match_array   [gif1, gif2, gif3]
+    expect(Gif.search('  ')).to match_array [gif1, gif2, gif3]
+  end
 end
 
 RSpec.describe Gif, '#tags' do

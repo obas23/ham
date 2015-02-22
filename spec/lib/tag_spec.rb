@@ -35,32 +35,6 @@ RSpec.describe Tag, '.retrieve' do
   end
 end
 
-RSpec.describe Tag, '#to_s' do
-  it "returns its id in human readable form" do
-    tag = Tag.create("a-nice-slugged-tag")
-    expect(tag.to_s).to eql "a nice slugged tag"
-  end
-end
-
-RSpec.describe Tag, '#gifs' do
-  before { clear_redis! }
-
-  it "returns its associated gifs" do
-    gif1 = Gif.create "gif1"
-    gif2 = Gif.create "gif2"
-    gif3 = Gif.create "gif3"
-
-    gif1.tag! "mytag"
-    gif2.tag! "mytag"
-    gif3.tag! "mytag"
-
-    tag = Tag.retrieve("mytag")
-    expect(tag.gifs.map(&:id)).to include "gif1"
-    expect(tag.gifs.map(&:id)).to include "gif2"
-    expect(tag.gifs.map(&:id)).to include "gif3"
-  end
-end
-
 RSpec.describe Tag, '.search' do
   before { clear_redis! }
 
@@ -76,18 +50,15 @@ RSpec.describe Tag, '.search' do
     expect(Tag.search('tag')).to              match_array [tag1, tag4]
   end
 
-  it "returns no results if the query is nil" do
-    expect(Tag.search(nil)).to match_array []
+  it "returns all tags when the query is nil or empty" do
+    tag1 = Tag.create "tag1"
+    tag2 = Tag.create "tag2"
+    tag3 = Tag.create "tag3"
+    expect(Tag.search(nil)).to match_array  [tag1, tag2, tag3]
+    expect(Tag.search('')).to match_array   [tag1, tag2, tag3]
+    expect(Tag.search('  ')).to match_array [tag1, tag2, tag3]
   end
-
-  it "returns no results if the query is too small" do
-    tag = Tag.create 'abc'
-    expect(Tag.search('')).to    match_array []
-    expect(Tag.search('a')).to   match_array []
-    expect(Tag.search('ab')).to  match_array []
-    expect(Tag.search('abc')).to match_array [tag]
-  end
-
+  
   it "returns no results when there are no matching tags" do
     expect(Tag.search('wattt')).to match_array []
   end
@@ -118,6 +89,34 @@ RSpec.describe Tag, '.complete' do
     expect(Tag.complete('another awesome ta')).to       match_array [tag3]
     expect(Tag.complete('another awesome tag')).to      match_array [tag3]
     expect(Tag.complete('another awesome tag with')).to match_array []
+  end
+end
+
+
+
+RSpec.describe Tag, '#to_s' do
+  it "returns its id in human readable form" do
+    tag = Tag.create("a-nice-slugged-tag")
+    expect(tag.to_s).to eql "a nice slugged tag"
+  end
+end
+
+RSpec.describe Tag, '#gifs' do
+  before { clear_redis! }
+
+  it "returns its associated gifs" do
+    gif1 = Gif.create "gif1"
+    gif2 = Gif.create "gif2"
+    gif3 = Gif.create "gif3"
+
+    gif1.tag! "mytag"
+    gif2.tag! "mytag"
+    gif3.tag! "mytag"
+
+    tag = Tag.retrieve("mytag")
+    expect(tag.gifs.map(&:id)).to include "gif1"
+    expect(tag.gifs.map(&:id)).to include "gif2"
+    expect(tag.gifs.map(&:id)).to include "gif3"
   end
 end
 

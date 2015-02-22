@@ -17,25 +17,20 @@ Redis.current = Redis.new url: ENV.fetch('REDIS_URL'), db: ENV.fetch('REDIS_DB')
 $redis = Redis.current
 
 class App < Sinatra::Base
-  use Rack::MethodOverride
+  configure do
+    enable :logging
+    use Rack::Logger, STDOUT
+  end
 
   get "/" do
     @query = params[:q]
-    if @query.nil?
-      @gifs = Gif.all
-    else
-      @gifs = Gif.search(@query)
-    end
+    @gifs = Gif.search(@query)
     erb :gifs
   end
 
   get "/tags" do
     @query = params[:q]
-    if @query.nil?
-      @tags = Tag.all
-    else
-      @tags = Tag.search(@query)
-    end
+    @tags = Tag.search(@query)
     erb :tags
   end
 

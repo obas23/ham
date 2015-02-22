@@ -1,5 +1,6 @@
 class Gif < Model
   def self.search(query)
+    return all if query.nil? or query.strip.empty?
     tags = Tag.search(query)
     gifs = tags.map(&:gifs).flatten
     return gifs

@@ -1,16 +1,10 @@
 require 'spec_helper'
 
 RSpec.describe App, 'GET /' do
-  it "searches gifs when there is a query" do
+  it "searches gifs for the query" do
     gifs = double
     expect(Gif).to receive(:search).with('search term') { gifs }
     get '/', q: 'search term'
-  end
-
-  it "finds all gifs when there is no query" do
-    gifs = double
-    expect(Gif).to receive(:all) { gifs }
-    get '/'
   end
 end
 
@@ -23,16 +17,10 @@ RSpec.describe App, 'GET /:id' do
 end
 
 RSpec.describe App, 'GET /tags' do
-  it "searches tags when there is a query" do
+  it "searches tags for the query" do
     tags = double
     expect(Tag).to receive(:search).with('search term') { tags }
     get '/tags', q: 'search term'
-  end
-
-  it "finds all tags when there is no query" do
-    tags = double
-    expect(Tag).to receive(:all) { tags }
-    get '/tags'
   end
 end
 

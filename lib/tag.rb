@@ -30,6 +30,7 @@ class Tag < Model
   end
 
   def self.search(query)
+    return all if query.nil? or query.strip.empty?
     tokens = tokenize(query)
     return [] if tokens.none?
     sets    = tokens.sort.map { |token| "token:#{token}:tags" }
