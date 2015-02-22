@@ -1,8 +1,10 @@
 class Gif
   include Model
 
-  def self.search(*args)
-    []
+  def self.search(query)
+    tags = Tag.search(query)
+    gifs = tags.map(&:gifs).flatten
+    return gifs
   end
 
   def tags

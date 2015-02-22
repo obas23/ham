@@ -3,26 +3,25 @@ require 'rails_helper'
 RSpec.describe Gif, '.search' do
   before { clear_redis! }
 
-  xit "returns gifs matching the query" do
-    blue_tag = Tag.create text: "blue"
-    red_tag = Tag.create text: "red"
+  it "returns gifs matching the query" do
+    blue_tag = Tag.create "blue", Date.today
+    red_tag  = Tag.create "red",  Date.today + 1.hour
 
-    blue_gif = Gif.create id: "blue_gif"
-    blue_gif.tags << blue_tag
+    blue_gif = Gif.create "blue_gif"
+    blue_gif.tag! "blue"
 
-    red_gif = Gif.create id: "red_gif"
-    red_gif.tags << red_tag
+    red_gif = Gif.create "red_gif"
+    red_gif.tag! "red"
 
-    blue_and_red_gif = Gif.create id: "blue_and_red_gif"
-    blue_and_red_gif.tags << blue_tag
-    blue_and_red_gif.tags << red_tag
+    blue_and_red_gif = Gif.create "blue_and_red_gif"
+    blue_and_red_gif.tag! "blue"
+    blue_and_red_gif.tag! "red"
 
     expect(Gif.search("blue")).to   match_array [blue_and_red_gif, blue_gif]
     expect(Gif.search("red")).to    match_array [blue_and_red_gif, red_gif]
     expect(Gif.search("purple")).to match_array []
   end
 end
-
 
 RSpec.describe Gif, '#tags' do
   before { clear_redis! }
