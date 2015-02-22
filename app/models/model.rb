@@ -12,7 +12,7 @@ module Model
     end
 
     def create(id, date=Time.now)
-      score = self.score(id) || date.to_time.to_i
+      score = self.score_for(id) || date.to_time.to_i
       $redis.zadd(set, score, id)
       new(id)
     end
@@ -22,13 +22,13 @@ module Model
     end
 
     def retrieve(id)
-      score = self.score(id)
+      score = self.score_for(id)
       raise NotFound if score.nil?
       id = $redis.zrangebyscore(set, score, score).first
       new(id)
     end
 
-    def score(id)
+    def score_for(id)
       $redis.zscore(set, id)
     end
 
@@ -43,7 +43,7 @@ module Model
     end
 
     def next(id)
-      score = self.score(id)
+      score = self.score_for(id)
       id = $redis.zrevrangebyscore(set, "(#{score}", "-inf", limit: [0,1]).first
       if id
         retrieve(id)
@@ -53,7 +53,7 @@ module Model
     end
 
     def prev(id)
-      score = self.score(id)
+      score = self.score_for(id)
       id = $redis.zrangebyscore(set, "(#{score}", "+inf", limit: [0,1]).first
       if id
         retrieve(id)

@@ -64,23 +64,23 @@ end
 RSpec.describe Tag, '.search' do
   before { clear_redis! }
 
-  xit "returns tags matching the query" do
-    tag1 = Tag.create "your awesome tag"
-    tag2 = Tag.create "your"
-    tag3 = Tag.create "awesome"
-    tag4 = Tag.create "tag"
+  it "returns tags matching the query" do
+    tag1 = Tag.create "your awesome tag", Date.today
+    tag2 = Tag.create "your",             Date.today + 1.hour
+    tag3 = Tag.create "awesome",          Date.today + 2.hours
+    tag4 = Tag.create "tag",              Date.today + 3.hour
 
-    expect(Tag.search('your')).to match_array [tag2, tag1]
-    expect(Tag.search('awesome')).to match_array [tag3, tag1]
-    expect(Tag.search('tag')).to match_array [tag4, tag1]
-    expect(Tag.search('your awesome tag')).to match_array [tag1]
+    expect(Tag.search('your awesome tag')).to match_array [tag1, tag3, tag2, tag4]
+    expect(Tag.search('your')).to             match_array [tag1, tag2]
+    expect(Tag.search('awesome')).to          match_array [tag1, tag3]
+    expect(Tag.search('tag')).to              match_array [tag1, tag4]
   end
 
-  xit "returns no results if the query is nil" do
+  it "returns no results if the query is nil" do
     expect(Tag.search(nil)).to match_array []
   end
 
-  xit "returns no results if the query is too small" do
+  it "returns no results if the query is too small" do
     tag = Tag.create 'abc'
     expect(Tag.search('')).to match_array []
     expect(Tag.search('a')).to match_array []
@@ -88,7 +88,7 @@ RSpec.describe Tag, '.search' do
     expect(Tag.search('abc')).to match_array [tag]
   end
 
-  xit "returns no results when there are no matching tags" do
+  it "returns no results when there are no matching tags" do
     expect(Tag.search('wattt')).to match_array []
   end
 end
