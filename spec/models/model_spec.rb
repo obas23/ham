@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-class Widget
-  include Model
+class Widget < Model
 end
 
 RSpec.describe Model, '.create' do
@@ -47,13 +46,68 @@ RSpec.describe Widget, '.retrieve' do
   end
 end
 
+RSpec.describe Widget, '.score_for' do
+  before { clear_redis! }
+
+  it "returns the score for the id" do
+    widget1 = Widget.create "widget1"
+    widget2 = Widget.create "widget2"
+    widget3 = Widget.create "widget3"
+
+    expect(Widget.score_for("widget1")).to eql 1.0
+    expect(Widget.score_for("widget2")).to eql 2.0
+    expect(Widget.score_for("widget3")).to eql 3.0
+  end
+end
+
+RSpec.describe Widget, '.max' do
+  before { clear_redis! }
+
+  it "returns the score for last element" do
+    widget1 = Widget.create "widget1"
+    widget2 = Widget.create "widget2"
+    widget3 = Widget.create "widget3"
+
+    expect(Widget.max).to eql 3.0
+  end
+
+  it "returns 0 when it is empty" do
+    clear_redis!
+    expect(Widget.max).to eql 0.0
+  end
+end
+
+RSpec.describe Widget, '.first' do
+  before { clear_redis! }
+
+  it "returns the first element sorted by date desc" do
+    widget1 = Widget.create "widget1"
+    widget2 = Widget.create "widget2"
+    widget3 = Widget.create "widget3"
+
+    expect(Widget.first).to eq widget3
+  end
+end
+
+RSpec.describe Widget, '.last' do
+  before { clear_redis! }
+
+  it "returns the first element sorted by date asc" do
+    widget1 = Widget.create "widget1"
+    widget2 = Widget.create "widget2"
+    widget3 = Widget.create "widget3"
+
+    expect(Widget.last).to eq widget1
+  end
+end
+
 RSpec.describe Widget, '.next' do
   before { clear_redis! }
 
   it "returns the next model" do
-    widget1 = Widget.create "widget1", Date.today
-    widget2 = Widget.create "widget2", Date.today + 1.day
-    widget3 = Widget.create "widget3", Date.today + 2.days
+    widget1 = Widget.create "widget1"
+    widget2 = Widget.create "widget2"
+    widget3 = Widget.create "widget3"
     expect(Widget.next(widget3.id)).to eq widget2
     expect(Widget.next(widget2.id)).to eq widget1
     expect(Widget.next(widget1.id)).to eq widget3
@@ -64,9 +118,9 @@ RSpec.describe Widget, '.prev' do
   before { clear_redis! }
 
   it "returns the previous model" do
-    widget1 = Widget.create "widget1", Date.today
-    widget2 = Widget.create "widget2", Date.today + 1.day
-    widget3 = Widget.create "widget3", Date.today + 2.days
+    widget1 = Widget.create "widget1"
+    widget2 = Widget.create "widget2"
+    widget3 = Widget.create "widget3"
     expect(Widget.prev(widget1.id)).to eq widget2
     expect(Widget.prev(widget2.id)).to eq widget3
     expect(Widget.prev(widget3.id)).to eq widget1

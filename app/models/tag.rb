@@ -1,16 +1,25 @@
-class Tag
-  include Model
+class Tag < Model
 
-  def self.create(tag, date=Time.now)
+  def self.create(tag)
     id     = normalize(tag)
+    text   = denormalize(id)
     tokens = tokenize(tag)
-    score  = self.score_for(id) || date.to_time.to_i
+
+    max   = $redis.zrange(set, -1, -1, withscores: true).map(&:last).first || 0
+    score  = self.score_for(id) || max + 1
+
     $redis.zadd(set, score, id)
 
     tokens.each do |token|
-      set = "token:#{token}:tags"
-      $redis.sadd(set, id)
+      $redis.sadd("token:#{token}:tags", id)
     end
+
+    (1..(text.length)).each do |chars|
+      stub = text[0...chars]
+      $redis.zadd("tags:stubs", 0, stub)
+    end
+
+    $redis.zadd("tags:stubs", 0, "#{text}*")
 
     new(id)
   end
@@ -25,7 +34,35 @@ class Tag
     return [] if tokens.none?
     sets    = tokens.sort.map { |token| "token:#{token}:tags" }
     results = $redis.sunion(*sets).sort_by(&:length).reverse
-    tags    = results.map { |tag| new(tag) }
+    tags    = results.map { |tag| retrieve(tag) }
+    return tags
+  end
+
+  def self.complete(query)
+    results  = []
+    rangelen = 50
+    count    = 50
+    start    = $redis.zrank("tags:stubs", query)
+    return [] if !start
+
+    while results.length != count
+      stubs = $redis.zrange("tags:stubs", start, start + rangelen - 1)
+      start += rangelen
+      break if !stubs or stubs.length == 0
+
+      stubs.each do |stub|
+        minlen = [stub.length, query.length].min
+        if stub[0...minlen] != query[0...minlen]
+          count = results.count
+          break
+        end
+        if stub[-1..-1] == "*" and results.length != count
+          results << stub[0...-1]
+        end
+      end
+    end
+
+    tags = results.map { |tag| retrieve(tag) }
     return tags
   end
 
@@ -42,12 +79,18 @@ class Tag
     text.gsub(/-+/, ' ')
   end
 
+  attr_reader :id
+
+  def initialize(id)
+    @id = Tag.normalize(id)
+  end
+
   def to_s
     Tag.denormalize(id)
   end
 
   def gifs
-    $redis.smembers("tag:#{id}:gifs").map { |g| Gif.new(g) }
+    $redis.smembers("tag:#{id}:gifs").map { |g| Gif.retrieve(g) }
   end
 end
 

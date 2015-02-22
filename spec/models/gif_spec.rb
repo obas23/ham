@@ -4,8 +4,8 @@ RSpec.describe Gif, '.search' do
   before { clear_redis! }
 
   it "returns gifs matching the query" do
-    blue_tag = Tag.create "blue", Date.today
-    red_tag  = Tag.create "red",  Date.today + 1.hour
+    blue_tag = Tag.create "blue"
+    red_tag  = Tag.create "red"
 
     blue_gif = Gif.create "blue_gif"
     blue_gif.tag! "blue"
@@ -27,13 +27,15 @@ RSpec.describe Gif, '#tags' do
   before { clear_redis! }
 
   it "returns its tags" do
-    gif = Gif.create("gif123")
-    tag1, tag2, tag3 = double, double, double
+    gif  = Gif.create("gif123")
 
-    expect($redis).to receive(:smembers).with("gif:gif123:tags").and_return(["tag1", "tag2", "tag3"])
-    allow(Tag).to receive(:new).with("tag1").and_return(tag1)
-    allow(Tag).to receive(:new).with("tag2").and_return(tag2)
-    allow(Tag).to receive(:new).with("tag3").and_return(tag3)
+    tag1 = Tag.create("tag1")
+    tag2 = Tag.create("tag2")
+    tag3 = Tag.create("tag3")
+
+    gif.tag! "tag1"
+    gif.tag! "tag2"
+    gif.tag! "tag3"
 
     expect(gif.tags).to match_array [tag1, tag2, tag3]
   end

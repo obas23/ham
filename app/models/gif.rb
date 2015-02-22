@@ -1,6 +1,4 @@
-class Gif
-  include Model
-
+class Gif < Model
   def self.search(query)
     tags = Tag.search(query)
     gifs = tags.map(&:gifs).flatten
@@ -8,7 +6,7 @@ class Gif
   end
 
   def tags
-    $redis.smembers("gif:#{id}:tags").map { |t| Tag.new(t) }
+    $redis.smembers("gif:#{id}:tags").map { |tag| Tag.retrieve(tag) }
   end
 
   def tag!(tag)

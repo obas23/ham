@@ -1,65 +1,63 @@
-module Model
+class Model
   Error = Class.new(StandardError)
   NotFound = Class.new(Error)
 
-  def self.included(base)
-    base.extend(ClassMethods)
+  def self.set
+    self.name.pluralize.downcase
   end
 
-  module ClassMethods
-    def set
-      self.name.pluralize.downcase
-    end
+  def self.create(id)
+    score = self.score_for(id) || max + 1
+    $redis.zadd(set, score, id)
+    new(id)
+  end
 
-    def create(id, date=Time.now)
-      score = self.score_for(id) || date.to_time.to_i
-      $redis.zadd(set, score, id)
-      new(id)
-    end
+  def self.all
+    $redis.zrevrange(set, 0, -1).map { |id| new(id) }
+  end
 
-    def all
-      $redis.zrevrange(set, 0, -1).map { |id| new(id) }
-    end
+  def self.retrieve(id)
+    score = self.score_for(id)
+    raise NotFound if score.nil?
+    id = $redis.zrangebyscore(set, score, score).first
+    new(id)
+  end
 
-    def retrieve(id)
-      score = self.score_for(id)
-      raise NotFound if score.nil?
-      id = $redis.zrangebyscore(set, score, score).first
-      new(id)
-    end
+  def self.score_for(id)
+    $redis.zscore(set, id)
+  end
 
-    def score_for(id)
-      $redis.zscore(set, id)
-    end
+  def self.max
+    $redis.zrange(set, -1, -1, withscores: true).map(&:last).first || 0.0
+  end
 
-    def first
-      id = $redis.zrevrangebyscore(set, "+inf", "-inf", limit: [0,1]).first
+  def self.first
+    id = $redis.zrevrangebyscore(set, "+inf", "-inf", limit: [0,1]).first
+    retrieve(id)
+  end
+
+  def self.last
+    id = $redis.zrangebyscore(set, "-inf", "+inf", limit: [0,1]).first
+    retrieve(id)
+  end
+
+  def self.next(id)
+    score = self.score_for(id)
+    id = $redis.zrevrangebyscore(set, "(#{score}", "-inf", limit: [0,1]).first
+    if id
       retrieve(id)
+    else
+      first
     end
+  end
 
-    def last
-      id = $redis.zrangebyscore(set, "-inf", "+inf", limit: [0,1]).first
+  def self.prev(id)
+    score = self.score_for(id)
+    id = $redis.zrangebyscore(set, "(#{score}", "+inf", limit: [0,1]).first
+    if id
       retrieve(id)
-    end
-
-    def next(id)
-      score = self.score_for(id)
-      id = $redis.zrevrangebyscore(set, "(#{score}", "-inf", limit: [0,1]).first
-      if id
-        retrieve(id)
-      else
-        first
-      end
-    end
-
-    def prev(id)
-      score = self.score_for(id)
-      id = $redis.zrangebyscore(set, "(#{score}", "+inf", limit: [0,1]).first
-      if id
-        retrieve(id)
-      else
-        last
-      end
+    else
+      last
     end
   end
 

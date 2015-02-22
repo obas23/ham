@@ -65,10 +65,10 @@ RSpec.describe Tag, '.search' do
   before { clear_redis! }
 
   it "returns tags matching the query" do
-    tag1 = Tag.create "your awesome tag", Date.today
-    tag2 = Tag.create "your",             Date.today + 1.hour
-    tag3 = Tag.create "awesome",          Date.today + 2.hours
-    tag4 = Tag.create "tag",              Date.today + 3.hour
+    tag1 = Tag.create "your awesome tag"
+    tag2 = Tag.create "your"
+    tag3 = Tag.create "awesome"
+    tag4 = Tag.create "tag"
 
     expect(Tag.search('your awesome tag')).to match_array [tag1, tag3, tag2, tag4]
     expect(Tag.search('your')).to             match_array [tag1, tag2]
@@ -82,14 +82,42 @@ RSpec.describe Tag, '.search' do
 
   it "returns no results if the query is too small" do
     tag = Tag.create 'abc'
-    expect(Tag.search('')).to match_array []
-    expect(Tag.search('a')).to match_array []
-    expect(Tag.search('ab')).to match_array []
+    expect(Tag.search('')).to    match_array []
+    expect(Tag.search('a')).to   match_array []
+    expect(Tag.search('ab')).to  match_array []
     expect(Tag.search('abc')).to match_array [tag]
   end
 
   it "returns no results when there are no matching tags" do
     expect(Tag.search('wattt')).to match_array []
+  end
+end
+
+RSpec.describe Tag, '.complete' do
+  before { clear_redis! }
+
+  it "returns tags starting with the query" do
+    tag1 = Tag.create "my awesome tag"
+    tag2 = Tag.create "your awesome tag"
+    tag3 = Tag.create "another awesome tag"
+
+    expect(Tag.complete('my')).to                       match_array [tag1]
+    expect(Tag.complete('my awesome')).to               match_array [tag1]
+    expect(Tag.complete('my awesome ta')).to            match_array [tag1]
+    expect(Tag.complete('my awesome tag')).to           match_array [tag1]
+    expect(Tag.complete('my awesome tag with')).to      match_array []
+
+    expect(Tag.complete('your')).to                     match_array [tag2]
+    expect(Tag.complete('your awesome')).to             match_array [tag2]
+    expect(Tag.complete('your awesome ta')).to          match_array [tag2]
+    expect(Tag.complete('your awesome tag')).to         match_array [tag2]
+    expect(Tag.complete('your awesome tag with')).to    match_array []
+
+    expect(Tag.complete('another')).to                  match_array [tag3]
+    expect(Tag.complete('another awesome')).to          match_array [tag3]
+    expect(Tag.complete('another awesome ta')).to       match_array [tag3]
+    expect(Tag.complete('another awesome tag')).to      match_array [tag3]
+    expect(Tag.complete('another awesome tag with')).to match_array []
   end
 end
 
