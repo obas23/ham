@@ -10,18 +10,18 @@ class TagsController < ApplicationController
   end
 
   def show
-    @tag = Tag.find(params[:id])
+    @tag = Tag.retrieve(params[:id])
     @gifs = @tag.gifs
   end
 
   def create
-    @gif = Gif.find(params[:gif_id])
+    @gif = Gif.retrieve(params[:gif_id])
     @gif.tag! params[:tag]
     redirect_to gif_path(@gif)
   end
 
   def destroy
-    @gif = Gif.find(params[:gif_id])
+    @gif = Gif.retrieve(params[:gif_id])
     @gif.untag! params[:id]
     redirect_to gif_path(@gif)
   end

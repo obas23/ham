@@ -35,7 +35,7 @@ RSpec.describe TagsController, '#show', type: :controller do
   let(:tag)  { double(gifs: gifs) }
 
   before do
-    allow(Tag).to receive(:find).with("tag123").and_return(tag)
+    allow(Tag).to receive(:retrieve).with("tag123").and_return(tag)
   end
 
   it "returns http success" do
@@ -58,12 +58,12 @@ RSpec.describe TagsController, '#create', type: :controller do
   let(:gif) { double(id: "gif123") }
 
   before do
-    allow(Gif).to receive(:find) { gif }
+    allow(Gif).to receive(:retrieve) { gif }
     allow(gif).to receive(:tag!)
   end
 
   it "tags the gif" do
-    expect(Gif).to receive(:find).with("gif123").and_return(gif)
+    expect(Gif).to receive(:retrieve).with("gif123").and_return(gif)
     expect(gif).to receive(:tag!).with('tag-text')
     post :create, gif_id: 'gif123', tag: 'tag-text'
   end
@@ -78,12 +78,12 @@ RSpec.describe TagsController, '#destroy', type: :controller do
   let(:gif) { double(id: "gif123") }
 
   before do
-    allow(Gif).to receive(:find) { gif }
+    allow(Gif).to receive(:retrieve) { gif }
     allow(gif).to receive(:untag!)
   end
 
   it "untags the gif" do
-    expect(Gif).to receive(:find).with("gif123").and_return(gif)
+    expect(Gif).to receive(:retrieve).with("gif123").and_return(gif)
     expect(gif).to receive(:untag!).with('123')
     delete :destroy, gif_id: 'gif123', id: 123
   end

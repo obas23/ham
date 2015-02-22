@@ -33,7 +33,7 @@ RSpec.describe GifsController, '#show', type: :controller do
   let(:gif) { double }
 
   before do
-    allow(Gif).to receive(:find).with("gif123").and_return(gif)
+    allow(Gif).to receive(:retrieve).with("gif123").and_return(gif)
   end
 
   it "returns http success" do
