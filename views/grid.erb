@@ -1,0 +1,10 @@
+<ul class="gifs">
+  <% @gifs.each do |gif| %>
+    <li>
+      <a href="/<%= gif.id %>">
+        <img src="<%= gif.thumbnail_url %>" />
+      </a>
+    </li>
+  <% end %>
+</ul>
+

@@ -1,0 +1,15 @@
+<div class="search">
+  <form action="/" method="get">
+    <input name="q" type="text" value="<%= @query %>" />
+  </form>
+</div>
+
+<%= erb :grid %>
+
+<script>
+  // Focus search box and move caret to end
+  $("[name='q']").each(function() {
+    $(this).focus().val($(this).val());
+  });
+</script>
+

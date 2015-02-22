@@ -1,0 +1,52 @@
+<div class="container">
+  <header>
+    <nav class="clearfix">
+      <a href="/<%= @gif.prev.id %>" class="left">&lt; prev</a>
+      <a href="/">all</a>
+      <a href="/<%= @gif.next.id %>" class="right">next &gt;</a>
+    </nav>
+  </header>
+
+  <div class="gif">
+    <a href="<%= @gif.url %>">
+      <img src="<%= @gif.url %>" />
+    </a>
+  </div>
+
+  <div class="tags">
+    <form action="/<%= @gif.id %>/tags" method="post">
+      <input name="tag" type="text" placeholder="tag..." />
+    </form>
+
+    <table>
+      <% @gif.tags.each do |tag| %>
+        <tr>
+          <th class="ljust"><a href="/tags/<%= tag.id %>"><%= tag.to_s %></th>
+          <td class="rjust"><a href="/<%= @gif.id %>/tags/<%= tag.id %>" data-method="delete">remove</a></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<script>
+  $(document).keydown(function(e) {
+    // Something has focus. Input, anchor, etc.
+    if ($(':focus').length) return;
+
+    switch(e.which) {
+      case 37: // left
+      window.location.href = "/<%= @gif.prev.id %>";
+      e.preventDefault();
+      break;
+
+      case 39: // right
+      window.location.href = "/<%= @gif.next.id %>";
+      e.preventDefault();
+      break;
+
+      default: return;
+    }
+  });
+</script>
+
