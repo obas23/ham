@@ -2,12 +2,13 @@
 **.orig
 .env
 .env.*
+/log
+*.log
 
 /coverage/
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /db/database.yml
-/log
 /public/system
 /tmp
 /spec/tmp
