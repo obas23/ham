@@ -1,0 +1,10 @@
+<ul class="gifs">
+  <% gifs.each do |gif| %>
+    <li>
+      <%= link_to gif_path(gif) do %>
+        <%= image_tag gif.thumbnail_url %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+

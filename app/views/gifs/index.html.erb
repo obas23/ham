@@ -4,15 +4,7 @@
   <% end %>
 </div>
 
-<ul class="gifs">
-  <% @gifs.each do |gif| %>
-    <li>
-      <%= link_to gif_path(gif) do %>
-        <%= image_tag gif.thumbnail_url %>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
+<%= render partial: "gifs/grid", locals: { gifs: @gifs } %>
 
 <script>
   // Focus search box and move caret to end
