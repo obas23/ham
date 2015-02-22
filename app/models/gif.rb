@@ -1,30 +1,24 @@
-class Gif < ActiveRecord::Base
-  has_and_belongs_to_many :tags
+class Gif
+  include Model
 
-  validates :id, presence: true, uniqueness: { case_sensitive: false }
-
-  default_scope { order('created_at DESC') }
-
-  def self.search(q)
-    joins(:tags).merge(Tag.search(q))
+  def self.search(*args)
+    []
   end
 
-  def self.next(date)
-    where("created_at < ?", date).reorder('created_at DESC').limit(1).first or first
+  def tags
+    $redis.smembers("gif:#{id}:tags").map { |t| Tag.new(t) }
   end
 
-  def self.prev(date)
-    where("created_at > ?", date).reorder('created_at ASC').limit(1).first or last
+  def tag!(tag)
+    tag = Tag.create(tag)
+    $redis.sadd("gif:#{id}:tags", tag.id)
+    $redis.sadd("tag:#{tag.id}:gifs", id)
   end
 
-  def tag!(text)
-    tag = Tag.find_or_create_by! text: text.to_s.strip.downcase
-    tags << tag unless tags.include?(tag)
-  end
-
-  def untag!(tag_id)
-    tag = tags.find(tag_id)
-    tags.delete(tag)
+  def untag!(tag)
+    tag = Tag.retrieve(tag)
+    $redis.srem("gif:#{id}:tags", tag.id)
+    $redis.srem("tag:#{tag.id}:gifs", id)
   end
 
   def url
@@ -36,11 +30,11 @@ class Gif < ActiveRecord::Base
   end
 
   def next
-    Gif.next(created_at)
+    Gif.next(id)
   end
 
   def prev
-    Gif.prev(created_at)
+    Gif.prev(id)
   end
 
   def synced?

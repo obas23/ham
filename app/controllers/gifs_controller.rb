@@ -10,7 +10,7 @@ class GifsController < ApplicationController
   end
 
   def show
-    @gif = Gif.find(params[:id])
+    @gif = Gif.retrieve(params[:id])
   end
 
 end
