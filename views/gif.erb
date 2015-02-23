@@ -15,7 +15,8 @@
 
   <div class="tags">
     <form action="/<%= @gif.id %>/tags" method="post">
-      <input name="tag" type="text" placeholder="tag..." />
+      <input id="tag" name="tag" type="text" placeholder="tag..." list="recommended-tags" tabindex="1" />
+      <datalist id="recommended-tags"></datalist>
     </form>
 
     <table>
@@ -47,6 +48,27 @@
 
       default: return;
     }
+  });
+
+  var $input = $("#tag");
+  var $datalist = $("#recommended-tags");
+
+
+  $input.keyup(function() {
+    var query = $(this).val();
+
+    $.ajax({
+      type: 'get',
+      url:  '/tags/complete',
+      data: { q: query },
+      dataType: 'json'
+    }).done(function(recommended_tags) {
+      $datalist.empty();
+      recommended_tags.forEach(function(recommendation) {
+        var $option = $('<option>').val(recommendation);
+        $datalist.append($option);
+      });
+    });
   });
 </script>
 

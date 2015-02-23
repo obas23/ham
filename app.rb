@@ -5,6 +5,7 @@ require 'bundler'
 
 Bundler.require
 
+require 'json'
 require 'lib/model'
 require 'lib/gif'
 require 'lib/tag'
@@ -32,6 +33,13 @@ class App < Sinatra::Base
     @query = params[:q]
     @tags = Tag.search(@query)
     erb :tags
+  end
+
+  get "/tags/complete" do
+    @query = params[:q]
+    @tags = Tag.complete(@query)
+    content_type :json
+    @tags.map(&:to_s).to_json
   end
 
   get "/tags/:tag" do

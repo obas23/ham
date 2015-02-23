@@ -63,7 +63,7 @@ class Tag < Model
       end
     end
 
-    tags = results.map { |tag| retrieve(tag) }
+    tags = results.reverse.map { |tag| retrieve(tag) }
     return tags
   end
 

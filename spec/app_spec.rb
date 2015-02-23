@@ -24,6 +24,14 @@ RSpec.describe App, 'GET /tags' do
   end
 end
 
+RSpec.describe App, 'GET /tags/complete' do
+  it "searches tags for autocompletion" do
+    tags = double
+    expect(Tag).to receive(:complete).with('search term') { tags }
+    get '/tags/complete', q: 'search term'
+  end
+end
+
 RSpec.describe App, 'GET /tags/:id' do
   it "finds the tag" do
     tag = double
