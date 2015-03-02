@@ -128,28 +128,3 @@ RSpec.describe Gif, '#attributes' do
   end
 end
 
-RSpec.describe Gif, '#synced?' do
-  let(:gif)      { Gif.create("gif123") }
-  let(:uri)      { double(host: "host", port: "port", request_uri: "request_uri") }
-  let(:http)     { double }
-  let(:request)  { double }
-  let(:response) { double }
-
-  before do
-    allow(URI).to receive(:parse).with(gif.url).and_return(uri)
-    allow(Net::HTTP).to receive(:new).with("host", "port").and_return(http)
-    allow(Net::HTTP::Head).to receive(:new).with("request_uri").and_return(request)
-    allow(http).to receive(:request).with(request).and_return(response)
-  end
-
-  it "returns true when the image exists on Imgur" do
-    expect(response).to receive(:instance_of?).with(Net::HTTPOK).and_return(true)
-    expect(gif.synced?).to eql true
-  end
-
-  it "returns false when the image does not exist on Imgur" do
-    expect(response).to receive(:instance_of?).with(Net::HTTPOK).and_return(false)
-    expect(gif.synced?).to eql false
-  end
-end
-

@@ -44,16 +44,6 @@ class Gif < Model
     Gif.prev(id)
   end
 
-  def synced?
-    @synced ||= begin
-      uri = URI.parse(url)
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Head.new(uri.request_uri)
-      response = http.request(request)
-      response.instance_of? Net::HTTPOK
-    end
-  end
-
   def attributes
     {
       id: id,
