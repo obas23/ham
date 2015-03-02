@@ -114,6 +114,20 @@ RSpec.describe Gif, '#thumbnail_url' do
   end
 end
 
+RSpec.describe Gif, '#attributes' do
+  let(:gif) { Gif.create("gif123") }
+
+  it "returns its attributes as a hash" do
+    hash = {
+      id: "gif123",
+      url: "http://i.imgur.com/gif123.gif",
+      thumbnail_url: "http://i.imgur.com/gif123b.gif"
+    }
+
+    expect(gif.attributes).to eql hash
+  end
+end
+
 RSpec.describe Gif, '#synced?' do
   let(:gif)      { Gif.create("gif123") }
   let(:uri)      { double(host: "host", port: "port", request_uri: "request_uri") }

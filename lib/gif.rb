@@ -7,19 +7,21 @@ class Gif < Model
   end
 
   def tags
-    $redis.smembers("gif:#{id}:tags").map { |tag| Tag.retrieve(tag) }
+    $redis.smembers("gif:#{id}:tags").sort.map { |tag| Tag.retrieve(tag) }
   end
 
   def tag!(tag)
     tag = Tag.create(tag)
     $redis.sadd("gif:#{id}:tags", tag.id)
     $redis.sadd("tag:#{tag.id}:gifs", id)
+    return tag
   end
 
   def untag!(tag)
     tag = Tag.retrieve(tag)
     $redis.srem("gif:#{id}:tags", tag.id)
     $redis.srem("tag:#{tag.id}:gifs", id)
+    return tag
   end
 
   def url
@@ -50,6 +52,14 @@ class Gif < Model
       response = http.request(request)
       response.instance_of? Net::HTTPOK
     end
+  end
+
+  def attributes
+    {
+      id: id,
+      url: url,
+      thumbnail_url: thumbnail_url
+    }
   end
 end
 

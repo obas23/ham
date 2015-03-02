@@ -79,4 +79,11 @@ class Model
     self.class.prev(id)
   end
 
+  def to_json(*a)
+    as_json.to_json(*a)
+  end
+
+  def as_json(*a)
+    attributes
+  end
 end

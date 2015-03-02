@@ -80,14 +80,15 @@ class Tag < Model
     text.gsub(/-+/, ' ')
   end
 
-  attr_reader :id
+  attr_reader :id, :text
 
   def initialize(id)
     @id = Tag.normalize(id)
+    @text = Tag.denormalize(id)
   end
 
   def to_s
-    Tag.denormalize(id)
+    text
   end
 
   def to_param
@@ -96,6 +97,13 @@ class Tag < Model
 
   def gifs
     $redis.smembers("tag:#{id}:gifs").map { |g| Gif.retrieve(g) }
+  end
+
+  def attributes
+    {
+      id: id,
+      text: text
+    }
   end
 end
 

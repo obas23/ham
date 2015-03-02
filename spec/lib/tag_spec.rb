@@ -58,7 +58,7 @@ RSpec.describe Tag, '.search' do
     expect(Tag.search('')).to match_array   [tag1, tag2, tag3]
     expect(Tag.search('  ')).to match_array [tag1, tag2, tag3]
   end
-  
+
   it "returns no results when there are no matching tags" do
     expect(Tag.search('wattt')).to match_array []
   end
@@ -93,11 +93,30 @@ RSpec.describe Tag, '.complete' do
 end
 
 
-
-RSpec.describe Tag, '#to_s' do
+RSpec.describe Tag, '#text' do
   it "returns its id in human readable form" do
     tag = Tag.create("a-nice-slugged-tag")
-    expect(tag.to_s).to eql "a nice slugged tag"
+    expect(tag.text).to eql "a nice slugged tag"
+  end
+end
+
+RSpec.describe Tag, '#to_s' do
+  it "returns its text" do
+    tag = Tag.create("a-nice-slugged-tag")
+    expect(tag).to receive(:text).and_return("tag text")
+    expect(tag.to_s).to eql "tag text"
+  end
+end
+
+RSpec.describe Tag, '#attributes' do
+  let(:tag) { Tag.create("My Custom Tag") }
+
+  it "returns its attributes as a hash" do
+    hash = {
+      id: "my-custom-tag",
+      text: "my custom tag"
+    }
+    expect(tag.attributes).to eql hash
   end
 end
 
