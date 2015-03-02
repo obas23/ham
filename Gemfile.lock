@@ -12,7 +12,6 @@ GEM
   specs:
     daemons (1.1.9)
     diff-lcs (1.2.5)
-    dotenv (1.0.2)
     eventmachine (1.0.7)
     mock_redis (0.14.0)
     rack (1.6.0)
@@ -44,7 +43,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dotenv (~> 1.0.2)
   mock_redis (~> 0.14.0)
   rack-test (~> 0.6.3)
   redis (~> 3.2.1)

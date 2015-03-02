@@ -10,12 +10,8 @@ require 'lib/model'
 require 'lib/gif'
 require 'lib/tag'
 
-Dotenv.load(
-  File.expand_path("../.env",  __FILE__)
-)
-
-Redis.current = Redis.new url: ENV.fetch('REDIS_URL'), db: ENV.fetch('REDIS_DB')
-$redis = Redis.current
+Redis.current = Redis.new url: ENV.fetch('REDIS_URL')
+$redis ||= Redis.current
 
 class App < Sinatra::Base
   configure do

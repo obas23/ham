@@ -1,4 +1,7 @@
 require 'rack/test'
+
+ENV['REDIS_URL'] = "redis://localhost:6379/2"
+
 require File.expand_path("../../app",  __FILE__)
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }
