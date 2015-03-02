@@ -36,14 +36,6 @@ class Gif < Model
     id
   end
 
-  def next
-    Gif.next(id)
-  end
-
-  def prev
-    Gif.prev(id)
-  end
-
   def attributes
     {
       id: id,
