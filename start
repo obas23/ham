@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+thin -p $PORT -P tmp/pids/$ENV.pid -l log/$ENV.log -d start
+
