@@ -7,7 +7,7 @@ class Model
   end
 
   def self.create(id)
-    score = self.score_for(id) || max + 1
+    score = self.score_for(id) || self.max + 1
     $redis.zadd(set, score, id)
     new(id)
   end
@@ -33,19 +33,19 @@ class Model
 
   def self.first
     id = $redis.zrevrangebyscore(set, "+inf", "-inf", limit: [0,1]).first
-    retrieve(id)
+    new(id)
   end
 
   def self.last
     id = $redis.zrangebyscore(set, "-inf", "+inf", limit: [0,1]).first
-    retrieve(id)
+    new(id)
   end
 
   def self.next(id)
     score = self.score_for(id)
     id = $redis.zrevrangebyscore(set, "(#{score}", "-inf", limit: [0,1]).first
     if id
-      retrieve(id)
+      new(id)
     else
       first
     end
@@ -55,7 +55,7 @@ class Model
     score = self.score_for(id)
     id = $redis.zrangebyscore(set, "(#{score}", "+inf", limit: [0,1]).first
     if id
-      retrieve(id)
+      new(id)
     else
       last
     end
