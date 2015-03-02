@@ -4,9 +4,8 @@ require 'uri'
 require 'redis'
 require 'colored'
 
-redis = Redis.new(url: "redis://localhost:6379/2")
-keys = redis.keys('*')
-redis.del(*keys) if keys.any?
+REDIS_URL="redis://localhost:6379/2"
+PORT=9293
 
 class NotEqlError < StandardError
   attr_reader :got, :expected
@@ -18,13 +17,18 @@ end
 
 class Suite
   def self.run(&block)
-    suite = new(block)
+    suite = new("http://localhost:#{PORT}", block)
 
     STDOUT.sync
 
+    # Clear out Redis
+    redis = Redis.new(url: REDIS_URL)
+    keys = redis.keys('*')
+    redis.del(*keys) if keys.any?
+
     begin
       # Start the app in test mode, daemonized
-      %x[ENV=test REDIS_URL=redis://localhost:6379/2 PORT=9293 ./start]
+      %x[ENV=test REDIS_URL=#{REDIS_URL} PORT=#{PORT} ./start]
 
       # Give the app some time to boot
       sleep 1
@@ -32,11 +36,14 @@ class Suite
       suite.run!
     ensure
       # Always stop the app
-      %x[ENV=test REDIS_URL=redis://localhost:6379/2 PORT=9293 ./stop]
+      %x[ENV=test REDIS_URL=#{REDIS_URL} PORT=#{PORT} ./stop]
     end
   end
 
-  def initialize(block)
+  attr_reader :base_url
+
+  def initialize(base_url, block)
+    @base_url = base_url
     @runnable = block
   end
 
@@ -46,7 +53,7 @@ class Suite
 
   def get(url)
     print "#{'GET'.ljust(7).blue} #{url.ljust(36)}"
-    uri = URI.parse("http://localhost:9293#{url}")
+    uri = URI.parse("#{base_url}#{url}")
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Get.new(uri.request_uri)
     response = http.request(request)
@@ -61,7 +68,7 @@ class Suite
   def post(url, params)
     print "#{'POST'.ljust(7).blue} #{url.ljust(36)}"
     headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
-    uri = URI.parse("http://localhost:9293#{url}")
+    uri = URI.parse("#{base_url}#{url}")
     response = Net::HTTP.post_form(uri, params)
     json = JSON.parse(response.body)
     status = response.code.to_i
@@ -73,7 +80,7 @@ class Suite
 
   def delete(url)
     print "#{'DELETE'.ljust(7).blue} #{url.ljust(36)}"
-    uri = URI.parse("http://localhost:9293#{url}")
+    uri = URI.parse("#{base_url}#{url}")
     http = Net::HTTP.new(uri.host, uri.port)
     request = Net::HTTP::Delete.new(uri.request_uri)
     response = http.request(request)
