@@ -19,6 +19,61 @@ class App < Sinatra::Base
     use Rack::Logger, STDOUT
   end
 
+  get "/api/gifs" do
+    content_type :json
+    gifs = Gif.search(params[:q])
+    gifs.to_json
+  end
+
+  post "/api/gifs" do
+    content_type :json
+    status 201
+    gif = Gif.create(params[:gif])
+    gif.to_json
+  end
+
+  get "/api/tags" do
+    content_type :json
+    tags = Tag.search(params[:q])
+    tags.to_json
+  end
+
+  get "/api/tags/complete" do
+    content_type :json
+    tags = Tag.complete(params[:q])
+    tags.to_json
+  end
+
+  get "/api/gifs/:id/tags" do
+    content_type :json
+    gif = Gif.retrieve(params[:id])
+    gif.tags.to_json
+  end
+
+  post "/api/gifs/:id/tags" do
+    content_type :json
+    status 201
+    gif = Gif.retrieve(params[:id])
+    tag = gif.tag! params[:tag]
+    tag.to_json
+  end
+
+  delete "/api/gifs/:id/tags/:tag" do
+    content_type :json
+    status 202
+    gif = Gif.retrieve(params[:id])
+    tag = gif.untag! params[:tag]
+    tag.to_json
+  end
+
+  get "/api/gifs/:id" do
+    content_type :json
+    gif = Gif.retrieve(params[:id])
+    gif.to_json
+  end
+
+
+
   get "/" do
     @query = params[:q]
     @gifs = Gif.search(@query)
