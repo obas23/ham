@@ -16,11 +16,20 @@ class Model
     $redis.zrevrange(set, 0, -1).map { |id| new(id) }
   end
 
-  def self.retrieve(id)
-    score = self.score_for(id)
-    raise NotFound if score.nil?
-    id = $redis.zrangebyscore(set, score, score).first
-    new(id)
+  def self.retrieve(ids)
+    if ids.is_a? Array
+      scores = ids.map { |id| self.score_for(id) }.compact
+      scores.map do |score|
+        id = $redis.zrangebyscore(set, score, score).first
+        new(id)
+      end
+    else
+      id = ids
+      score = self.score_for(id)
+      raise NotFound if score.nil?
+      id = $redis.zrangebyscore(set, score, score).first
+      new(id)
+    end
   end
 
   def self.score_for(id)

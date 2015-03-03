@@ -7,7 +7,7 @@ class Gif < Model
   end
 
   def tags
-    $redis.smembers("gif:#{id}:tags").sort.map { |tag| Tag.retrieve(tag) }
+    Tag.retrieve($redis.smembers("gif:#{id}:tags").sort)
   end
 
   def tag!(tag)

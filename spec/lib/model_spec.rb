@@ -35,7 +35,7 @@ RSpec.describe Widget, '.retrieve' do
   before { clear_redis! }
 
   it "returns the widget" do
-    widget1 = Widget.create "widget1"
+    Widget.create "widget1"
     expect(Widget.retrieve("widget1").id).to eql "widget1"
   end
 
@@ -43,6 +43,26 @@ RSpec.describe Widget, '.retrieve' do
     expect {
       Widget.retrieve("nonexistent-widget")
     }.to raise_exception Widget::NotFound
+  end
+
+  context "when id is an array" do
+    it "returns the widgets" do
+      Widget.create "widget1"
+      Widget.create "widget2"
+      Widget.create "widget3"
+      expect(
+        Widget.retrieve(["widget1", "widget2", "widget3"]).map(&:id)
+      ).to eql ["widget1", "widget2", "widget3"]
+    end
+
+    it "does not return widgets that do not exist" do
+      Widget.create "widget1"
+      Widget.create "widget2"
+
+      expect(
+        Widget.retrieve(["widget1", "nonexistent-widget1", "widget2", "nonexistent-widget2"]).map(&:id)
+      ).to eql ["widget1", "widget2"]
+    end
   end
 end
 

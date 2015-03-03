@@ -1,9 +1,9 @@
 class Tag < Model
 
   def self.create(tag)
-    id     = normalize(tag)
-    text   = denormalize(id)
-    tokens = tokenize(tag)
+    id     = to_id(tag)
+    text   = to_text(id)
+    tokens = to_tokens(text)
 
     max   = $redis.zrange(set, -1, -1, withscores: true).map(&:last).first || 0
     score  = self.score_for(id) || max + 1
@@ -24,18 +24,21 @@ class Tag < Model
     new(id)
   end
 
-  def self.retrieve(tag)
-    id = normalize(tag)
-    super(id)
+  def self.retrieve(id)
+    if id.is_a? Array
+      super id.map { |id| to_id(id) }
+    else
+      super to_id(id)
+    end
   end
 
   def self.search(query)
     return all if query.nil? or query.strip.empty?
-    tokens = tokenize(query)
+    tokens = to_tokens(query)
     return [] if tokens.none?
     sets    = tokens.sort.map { |token| "token:#{token}:tags" }
     results = $redis.sunion(*sets).sort_by(&:length).reverse
-    tags    = results.map { |tag| retrieve(tag) }
+    tags    = retrieve(results)
     return tags
   end
 
@@ -63,28 +66,30 @@ class Tag < Model
       end
     end
 
-    tags = results.reverse.map { |tag| retrieve(tag) }
+    tags = retrieve(results.reverse)
     return tags
   end
 
-  def self.tokenize(text)
+  def self.to_tokens(text)
     text.to_s.strip.downcase.split(/[^a-z\d-]+/)
   end
 
-  def self.normalize(text)
-    tokens = tokenize(text)
-    tokens.join('-')
+  def self.to_id(text)
+    to_tokens(text).join('-')
   end
 
-  def self.denormalize(text)
-    text.gsub(/-+/, ' ')
+  def self.to_text(id)
+    id.gsub(/-+/, ' ')
   end
 
-  attr_reader :id, :text
+  attr_reader :id
 
   def initialize(id)
-    @id = Tag.normalize(id)
-    @text = Tag.denormalize(id)
+    @id = id
+  end
+
+  def text
+    Tag.to_text(id)
   end
 
   def to_s
@@ -96,7 +101,7 @@ class Tag < Model
   end
 
   def gifs
-    $redis.smembers("tag:#{id}:gifs").map { |g| Gif.retrieve(g) }
+    Gif.retrieve($redis.smembers("tag:#{id}:gifs"))
   end
 
   def attributes
