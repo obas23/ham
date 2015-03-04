@@ -32,13 +32,13 @@ module Ham
 
     delete "/:id/tags/:tag" do
       @gif = Gif.retrieve(params[:id])
-      @gif.untag! params[:tag]
+      Gif.untag(@gif, params[:tag])
       redirect "/#{@gif.id}"
     end
 
     post "/:id/tags" do
       @gif = Gif.retrieve(params[:id])
-      @gif.tag! params[:tag]
+      Gif.tag(@gif, params[:tag])
       redirect "/#{@gif.id}"
     end
 

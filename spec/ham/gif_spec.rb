@@ -9,14 +9,14 @@ module Ham
       red_tag  = Tag.create "red"
 
       blue_gif = Gif.create "blue_gif"
-      blue_gif.tag! "blue"
+      Gif.tag(blue_gif, blue_tag)
 
       red_gif = Gif.create "red_gif"
-      red_gif.tag! "red"
+      Gif.tag(red_gif, red_tag)
 
       blue_and_red_gif = Gif.create "blue_and_red_gif"
-      blue_and_red_gif.tag! "blue"
-      blue_and_red_gif.tag! "red"
+      Gif.tag(blue_and_red_gif, blue_tag)
+      Gif.tag(blue_and_red_gif, red_tag)
 
       expect(Gif.search("blue")).to   match_array [blue_and_red_gif, blue_gif]
       expect(Gif.search("red")).to    match_array [blue_and_red_gif, red_gif]
@@ -34,6 +34,86 @@ module Ham
     end
   end
 
+  RSpec.describe Gif, '.tag' do
+    before { clear_redis! }
+
+    it "associates the tag with the gif" do
+      Gif.create("gif123")
+      Gif.tag("gif123", "tag123")
+
+      gif = Gif.retrieve("gif123")
+      expect(gif.tags.map(&:id)).to include "tag123"
+
+      tag = Tag.retrieve("tag123")
+      expect(tag.gifs.map(&:id)).to include "gif123"
+    end
+
+    it "doesn't add the tag when it already has it" do
+      Gif.create("gif123")
+      Gif.tag("gif123", "tag123")
+
+      gif = Gif.retrieve("gif123")
+
+      expect {
+        Gif.tag("gif123", "tag123")
+        Gif.tag("gif123", "tag123")
+        Gif.tag("gif123", "tag123")
+      }.to change(gif.tags, :count).by(0)
+    end
+
+    it "returns the tag" do
+      Gif.create("gif123")
+      tag = Gif.tag("gif123", "tag123")
+      expect(tag.id).to eql "tag123"
+    end
+
+    it "accepts gif and tag models" do
+      gif = Gif.create("gif123")
+      tag = Tag.create("tag123")
+
+      Gif.tag(gif, tag)
+
+      expect(gif.tags.map(&:id)).to include "tag123"
+      expect(tag.gifs.map(&:id)).to include "gif123"
+    end
+  end
+
+  RSpec.describe Gif, '.untag' do
+    before { clear_redis! }
+
+    it "removes the tag from the gif" do
+      gif = Gif.create("gif123")
+      tag = Tag.create("tag123")
+
+      Gif.tag "gif123", "tag123"
+
+      expect(gif.tags.map(&:id)).to include "tag123"
+      expect(tag.gifs.map(&:id)).to include "gif123"
+
+      Gif.untag "gif123", "tag123"
+
+      expect(gif.tags.map(&:id)).not_to include "tag123"
+      expect(tag.gifs.map(&:id)).not_to include "gif123"
+    end
+
+    it "returns the tag" do
+      Gif.create("gif123")
+      Tag.create("tag123")
+      tag = Gif.untag("gif123", "tag123")
+      expect(tag.id).to eql "tag123"
+    end
+
+    it "accepts gif and tag models" do
+      gif = Gif.create("gif123")
+      tag = Tag.create("tag123")
+
+      Gif.untag(gif, tag)
+
+      expect(gif.tags.map(&:id)).not_to include "tag123"
+      expect(tag.gifs.map(&:id)).not_to include "gif123"
+    end
+  end
+
   RSpec.describe Gif, '#tags' do
     before { clear_redis! }
 
@@ -44,56 +124,11 @@ module Ham
       tag2 = Tag.create("tag2")
       tag3 = Tag.create("tag3")
 
-      gif.tag! "tag1"
-      gif.tag! "tag2"
-      gif.tag! "tag3"
+      Gif.tag(gif, tag1)
+      Gif.tag(gif, tag2)
+      Gif.tag(gif, tag3)
 
       expect(gif.tags).to match_array [tag1, tag2, tag3]
-    end
-  end
-
-  RSpec.describe Gif, 'tag!' do
-    before { clear_redis! }
-
-    it "associates the tag with the gif" do
-      clear_redis!
-      gif = Gif.create("gif123")
-      gif.tag! "tag123"
-      expect(gif.tags.map(&:id)).to include "tag123"
-
-      tag = Tag.retrieve("tag123")
-      expect(tag.gifs.map(&:id)).to include "gif123"
-    end
-
-    it "doesn't add the tag when it already has it" do
-      gif = Gif.create("gif123")
-      gif.tag! "tag123"
-
-      expect {
-        gif.tag! "tag123"
-        gif.tag! "tag123"
-        gif.tag! "tag123"
-      }.to change(gif.tags, :count).by(0)
-    end
-  end
-
-  RSpec.describe Gif, 'untag!' do
-    before { clear_redis! }
-
-    it "removes the tag" do
-      gif = Gif.create("gif123")
-      gif.tag! "tag123"
-
-      gif = Gif.retrieve("gif123")
-      tag = Tag.retrieve("tag123")
-      expect(gif.tags.map(&:id)).to include "tag123"
-      expect(tag.gifs.map(&:id)).to include "gif123"
-      gif.untag! "tag123"
-
-      gif = Gif.retrieve("gif123")
-      tag = Tag.retrieve("tag123")
-      expect(gif.tags.map(&:id)).not_to include "tag123"
-      expect(tag.gifs.map(&:id)).not_to include "gif123"
     end
   end
 

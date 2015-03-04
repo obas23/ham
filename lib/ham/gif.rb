@@ -7,22 +7,28 @@ module Ham
       return gifs
     end
 
+    def self.tag(gif, tag)
+      gif = gif.id if gif.respond_to?(:id)
+      tag = tag.id if tag.respond_to?(:id)
+      gif = Gif.retrieve(gif)
+      tag = Tag.create(tag)
+      $redis.sadd("gif:#{gif.id}:tags", tag.id)
+      $redis.sadd("tag:#{tag.id}:gifs", gif.id)
+      return tag
+    end
+
+    def self.untag(gif, tag)
+      gif = gif.id if gif.respond_to?(:id)
+      tag = tag.id if tag.respond_to?(:id)
+      gif = Gif.retrieve(gif)
+      tag = Tag.retrieve(tag)
+      $redis.srem("gif:#{gif.id}:tags", tag.id)
+      $redis.srem("tag:#{tag.id}:gifs", gif.id)
+      return tag
+    end
+
     def tags
       Tag.retrieve($redis.smembers("gif:#{id}:tags").sort)
-    end
-
-    def tag!(tag)
-      tag = Tag.create(tag)
-      $redis.sadd("gif:#{id}:tags", tag.id)
-      $redis.sadd("tag:#{tag.id}:gifs", id)
-      return tag
-    end
-
-    def untag!(tag)
-      tag = Tag.retrieve(tag)
-      $redis.srem("gif:#{id}:tags", tag.id)
-      $redis.srem("tag:#{tag.id}:gifs", id)
-      return tag
     end
 
     def url

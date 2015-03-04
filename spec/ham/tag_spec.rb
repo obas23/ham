@@ -125,15 +125,16 @@ module Ham
     before { clear_redis! }
 
     it "returns its associated gifs" do
+      tag = Tag.create("mytag")
+
       gif1 = Gif.create "gif1"
       gif2 = Gif.create "gif2"
       gif3 = Gif.create "gif3"
 
-      gif1.tag! "mytag"
-      gif2.tag! "mytag"
-      gif3.tag! "mytag"
+      Gif.tag(gif1, tag)
+      Gif.tag(gif2, tag)
+      Gif.tag(gif3, tag)
 
-      tag = Tag.retrieve("mytag")
       expect(tag.gifs.map(&:id)).to include "gif1"
       expect(tag.gifs.map(&:id)).to include "gif2"
       expect(tag.gifs.map(&:id)).to include "gif3"
