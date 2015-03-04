@@ -10,5 +10,11 @@ $redis ||= Redis.current
 
 require 'lib/ham'
 
-run Ham::App
+map "/" do
+  run Ham::App
+end
+
+map "/api" do
+  run Ham::API
+end
 
