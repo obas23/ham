@@ -1,10 +1,11 @@
 module Ham
   class Model
-    Error = Class.new(StandardError)
-    NotFound = Class.new(Error)
+    def self.object
+      self.name.split('::').last
+    end
 
     def self.set
-      self.name.downcase.split('::').last + 's'
+      object.downcase + 's'
     end
 
     def self.create(id)
@@ -27,7 +28,7 @@ module Ham
       else
         id = ids
         score = self.score_for(id)
-        raise NotFound if score.nil?
+        raise ObjectNotFound, "Could find #{object} '#{id}'" if score.nil?
         id = $redis.zrangebyscore(set, score, score).first
         new(id)
       end

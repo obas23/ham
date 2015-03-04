@@ -43,7 +43,7 @@ module Ham
     it "raises when the widget does not exist" do
       expect {
         Widget.retrieve("nonexistent-widget")
-      }.to raise_exception Widget::NotFound
+      }.to raise_exception Ham::ObjectNotFound
     end
 
     context "when id is an array" do

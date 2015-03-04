@@ -118,6 +118,13 @@ Suite.run do
     assert_eql(json, [])
   end
 
+  get("/api/gifs/gif1") do |json, status|
+    assert_eql(status, 404)
+    assert_eql(json, {
+      "error" => { "message" => "Not Found" }
+    })
+  end
+
   post("/api/gifs", { gif: "gif1" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {

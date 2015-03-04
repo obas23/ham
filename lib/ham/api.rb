@@ -3,10 +3,26 @@ module Ham
     configure do
       enable :logging
       use Rack::Logger, STDOUT
+
+      set :dump_errors, false
+      set :raise_errors, true
+      set :show_exceptions, false
     end
 
     before do
       content_type :json
+    end
+
+    error do
+      halt 500, { error: { message: "Stop doing it wrong." } }.to_json
+    end
+
+    error 404 do
+      halt 404, { error: { message: "Not Found" } }.to_json
+    end
+
+    error ObjectNotFound do
+      halt 404, { error: { message: "Not Found" } }.to_json
     end
 
     get "/gifs" do
