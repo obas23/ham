@@ -118,61 +118,61 @@ Suite.run do
     assert_eql(json, [])
   end
 
-  post("/api/gifs", { gif: "abc123" }) do |json, status|
+  post("/api/gifs", { gif: "gif1" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {
-      "id" => "abc123",
-      "url" => "http://i.imgur.com/abc123.gif",
-      "thumbnail_url" => "http://i.imgur.com/abc123b.gif"
+      "id" => "gif1",
+      "url" => "http://i.imgur.com/gif1.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif1b.gif"
     })
   end
 
   get("/api/gifs") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
-      "id" => "abc123",
-      "url" => "http://i.imgur.com/abc123.gif",
-      "thumbnail_url" => "http://i.imgur.com/abc123b.gif"
+      "id" => "gif1",
+      "url" => "http://i.imgur.com/gif1.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif1b.gif"
     }])
   end
 
-  get("/api/gifs/abc123") do |json, status|
+  get("/api/gifs/gif1") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, {
-      "id" => "abc123",
-      "url" => "http://i.imgur.com/abc123.gif",
-      "thumbnail_url" => "http://i.imgur.com/abc123b.gif"
+      "id" => "gif1",
+      "url" => "http://i.imgur.com/gif1.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif1b.gif"
     })
   end
 
-  post("/api/gifs", { gif: "xyz456" }) do |json, status|
+  post("/api/gifs", { gif: "gif2" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {
-      "id" => "xyz456",
-      "url" => "http://i.imgur.com/xyz456.gif",
-      "thumbnail_url" => "http://i.imgur.com/xyz456b.gif"
+      "id" => "gif2",
+      "url" => "http://i.imgur.com/gif2.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif2b.gif"
     })
   end
 
   get("/api/gifs") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
-      "id" => "xyz456",
-      "url" => "http://i.imgur.com/xyz456.gif",
-      "thumbnail_url" => "http://i.imgur.com/xyz456b.gif"
+      "id" => "gif2",
+      "url" => "http://i.imgur.com/gif2.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif2b.gif"
     }, {
-      "id" => "abc123",
-      "url" => "http://i.imgur.com/abc123.gif",
-      "thumbnail_url" => "http://i.imgur.com/abc123b.gif"
+      "id" => "gif1",
+      "url" => "http://i.imgur.com/gif1.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif1b.gif"
     }])
   end
 
-  get("/api/gifs/xyz456") do |json, status|
+  get("/api/gifs/gif2") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, {
-      "id" => "xyz456",
-      "url" => "http://i.imgur.com/xyz456.gif",
-      "thumbnail_url" => "http://i.imgur.com/xyz456b.gif"
+      "id" => "gif2",
+      "url" => "http://i.imgur.com/gif2.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif2b.gif"
     })
   end
 
@@ -181,7 +181,7 @@ Suite.run do
     assert_eql(json, [])
   end
 
-  post("/api/gifs/abc123/tags", { tag: "Shared Tag" }) do |json, status|
+  post("/api/gifs/gif1/tags", { tag: "Shared Tag" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {
       "id" => "shared-tag",
@@ -189,7 +189,7 @@ Suite.run do
     })
   end
 
-  post("/api/gifs/abc123/tags", { tag: "Custom Tag 1" }) do |json, status|
+  post("/api/gifs/gif1/tags", { tag: "Custom Tag 1" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {
       "id" => "custom-tag-1",
@@ -197,7 +197,7 @@ Suite.run do
     })
   end
 
-  post("/api/gifs/xyz456/tags", { tag: "Shared Tag" }) do |json, status|
+  post("/api/gifs/gif2/tags", { tag: "Shared Tag" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {
       "id" => "shared-tag",
@@ -205,7 +205,7 @@ Suite.run do
     })
   end
 
-  post("/api/gifs/xyz456/tags", { tag: "Custom Tag 2" }) do |json, status|
+  post("/api/gifs/gif2/tags", { tag: "Custom Tag 2" }) do |json, status|
     assert_eql(status, 201)
     assert_eql(json, {
       "id" => "custom-tag-2",
@@ -227,7 +227,7 @@ Suite.run do
     }])
   end
 
-  get("/api/gifs/abc123/tags") do |json, status|
+  get("/api/gifs/gif1/tags") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
       "id" => "custom-tag-1",
@@ -238,7 +238,7 @@ Suite.run do
     }])
   end
 
-  get("/api/gifs/xyz456/tags") do |json, status|
+  get("/api/gifs/gif2/tags") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
       "id" => "custom-tag-2",
@@ -268,7 +268,7 @@ Suite.run do
     }])
   end
 
-  delete("/api/gifs/abc123/tags/custom-tag-1") do |json, status|
+  delete("/api/gifs/gif1/tags/custom-tag-1") do |json, status|
     assert_eql(status, 202)
     assert_eql(json, {
       "id" => "custom-tag-1",
@@ -276,7 +276,7 @@ Suite.run do
     })
   end
 
-  get("/api/gifs/abc123/tags") do |json, status|
+  get("/api/gifs/gif1/tags") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
       "id" => "shared-tag",
@@ -287,22 +287,22 @@ Suite.run do
   get("/api/gifs?q=shared") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
-      "id" => "xyz456",
-      "url" => "http://i.imgur.com/xyz456.gif",
-      "thumbnail_url" => "http://i.imgur.com/xyz456b.gif"
+      "id" => "gif2",
+      "url" => "http://i.imgur.com/gif2.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif2b.gif"
     }, {
-      "id" => "abc123",
-      "url" => "http://i.imgur.com/abc123.gif",
-      "thumbnail_url" => "http://i.imgur.com/abc123b.gif"
+      "id" => "gif1",
+      "url" => "http://i.imgur.com/gif1.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif1b.gif"
     }])
   end
 
   get("/api/gifs?q=custom") do |json, status|
     assert_eql(status, 200)
     assert_eql(json, [{
-      "id" => "xyz456",
-      "url" => "http://i.imgur.com/xyz456.gif",
-      "thumbnail_url" => "http://i.imgur.com/xyz456b.gif"
+      "id" => "gif2",
+      "url" => "http://i.imgur.com/gif2.gif",
+      "thumbnail_url" => "http://i.imgur.com/gif2b.gif"
     }])
   end
 end
