@@ -1,7 +1,10 @@
 module Ham
   module Web
     class API < Sinatra::Base
+      register Sinatra::CrossOrigin
+
       configure do
+        enable :cross_origin
         enable :logging
         use Rack::Logger, STDOUT
 
