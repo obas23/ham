@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-thin -p $PORT -P tmp/pids/$ENV.pid -l log/$ENV.log -d stop
+port="$1"
+
+if [ -z "$port" ]; then
+  echo "No port provided."
+  exit 1
+fi
+
+thin -P tmp/pids/thin.$port.pid stop
 
