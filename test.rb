@@ -30,28 +30,28 @@ Shakedown.sequence do
 
   get "/gifs" do
     status 200
-    json []
+    []
   end
 
   get "/gifs/gif1" do
     status 404
-    json({
+    {
       error: { message: "Not Found" }
-    })
+    }
   end
 
   post "/gifs", { gif: "gif1" } do
     status 201
-    json({
+    {
       id: "gif1",
       url: "http://i.imgur.com/gif1.gif",
       thumbnail_url: "http://i.imgur.com/gif1b.gif"
-    })
+    }
   end
 
   get "/gifs" do
     status 200
-    json [{
+    [{
       id: "gif1",
       url: "http://i.imgur.com/gif1.gif",
       thumbnail_url: "http://i.imgur.com/gif1b.gif"
@@ -60,25 +60,25 @@ Shakedown.sequence do
 
   get "/gifs/gif1" do
     status 200
-    json({
+    {
       id: "gif1",
       url: "http://i.imgur.com/gif1.gif",
       thumbnail_url: "http://i.imgur.com/gif1b.gif"
-    })
+    }
   end
 
   post "/gifs", { gif: "gif2" } do
     status 201
-    json({
+    {
       id: "gif2",
       url: "http://i.imgur.com/gif2.gif",
       thumbnail_url: "http://i.imgur.com/gif2b.gif"
-    })
+    }
   end
 
   get "/gifs" do
     status 200
-    json [{
+    [{
       id: "gif2",
       url: "http://i.imgur.com/gif2.gif",
       thumbnail_url: "http://i.imgur.com/gif2b.gif"
@@ -91,53 +91,53 @@ Shakedown.sequence do
 
   get "/gifs/gif2" do
     status 200
-    json({
+    {
       id: "gif2",
       url: "http://i.imgur.com/gif2.gif",
       thumbnail_url: "http://i.imgur.com/gif2b.gif"
-    })
+    }
   end
 
   get "/tags" do
     status 200
-    json []
+    []
   end
 
   post "/gifs/gif1/tags", { tag: "Shared Tag" } do
     status 201
-    json({
+    {
       id: "shared-tag",
       text: "shared tag"
-    })
+    }
   end
 
   post "/gifs/gif1/tags", { tag: "Custom Tag 1" } do
     status 201
-    json({
+    {
       id: "custom-tag-1",
       text: "custom tag 1"
-    })
+    }
   end
 
   post "/gifs/gif2/tags", { tag: "Shared Tag" } do
     status 201
-    json({
+    {
       id: "shared-tag",
       text: "shared tag"
-    })
+    }
   end
 
   post "/gifs/gif2/tags", { tag: "Custom Tag 2" } do
     status 201
-    json({
+    {
       id: "custom-tag-2",
       text: "custom tag 2"
-    })
+    }
   end
 
   get "/tags" do
     status 200
-    json [{
+    [{
       id: "custom-tag-2",
       text: "custom tag 2"
     }, {
@@ -151,7 +151,7 @@ Shakedown.sequence do
 
   get "/gifs/gif1/tags" do
     status 200
-    json [{
+    [{
       id: "custom-tag-1",
       text: "custom tag 1"
     }, {
@@ -162,7 +162,7 @@ Shakedown.sequence do
 
   get "/gifs/gif2/tags" do
     status 200
-    json [{
+    [{
       id: "custom-tag-2",
       text: "custom tag 2"
     }, {
@@ -173,7 +173,7 @@ Shakedown.sequence do
 
   get "/tags?q=shared" do
     status 200
-    json [{
+    [{
       id: "shared-tag",
       text: "shared tag"
     }]
@@ -181,7 +181,7 @@ Shakedown.sequence do
 
   get "/tags/complete?q=cust" do
     status 200
-    json [{
+    [{
       id: "custom-tag-2",
       text: "custom tag 2"
     }, {
@@ -192,15 +192,15 @@ Shakedown.sequence do
 
   delete "/gifs/gif1/tags/custom-tag-1" do
     status 202
-    json({
+    {
       id: "custom-tag-1",
       text: "custom tag 1"
-    })
+    }
   end
 
   get "/gifs/gif1/tags" do
     status 200
-    json [{
+    [{
       id: "shared-tag",
       text: "shared tag"
     }]
@@ -208,20 +208,20 @@ Shakedown.sequence do
 
   get "/gifs?q=shared" do
     status 200
-    json [{
-      id: "gif1",
-      url: "http://i.imgur.com/gif1.gif",
-      thumbnail_url: "http://i.imgur.com/gif1b.gif"
-    }, {
+    [{
       id: "gif2",
       url: "http://i.imgur.com/gif2.gif",
       thumbnail_url: "http://i.imgur.com/gif2b.gif"
+    }, {
+      id: "gif1",
+      url: "http://i.imgur.com/gif1.gif",
+      thumbnail_url: "http://i.imgur.com/gif1b.gif"
     }]
   end
 
   get "/gifs?q=custom" do
     status 200
-    json [{
+    [{
       id: "gif2",
       url: "http://i.imgur.com/gif2.gif",
       thumbnail_url: "http://i.imgur.com/gif2b.gif"
