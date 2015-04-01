@@ -6,21 +6,21 @@ module Ham
       text   = to_text(id)
       tokens = to_tokens(text)
 
-      max   = $redis.zrange(set, -1, -1, withscores: true).map(&:last).first || 0
+      max   = redis.zrange(set, -1, -1, withscores: true).map(&:last).first || 0
       score  = self.score_for(id) || max + 1
 
-      $redis.zadd(set, score, id)
+      redis.zadd(set, score, id)
 
       tokens.each do |token|
-        $redis.sadd("token:#{token}:tags", id)
+        redis.sadd("token:#{token}:tags", id)
       end
 
       (1..(text.length)).each do |chars|
         stub = text[0...chars]
-        $redis.zadd("tags:stubs", 0, stub)
+        redis.zadd("tags:stubs", 0, stub)
       end
 
-      $redis.zadd("tags:stubs", 0, "#{text}*")
+      redis.zadd("tags:stubs", 0, "#{text}*")
 
       new(id)
     end
@@ -38,7 +38,7 @@ module Ham
       tokens = to_tokens(query)
       return [] if tokens.none?
       sets    = tokens.sort.map { |token| "token:#{token}:tags" }
-      results = $redis.sunion(*sets).sort_by(&:length).reverse
+      results = redis.sunion(*sets).sort_by(&:length).reverse
       tags    = retrieve(results)
       return tags
     end
@@ -47,11 +47,11 @@ module Ham
       results  = []
       rangelen = 50
       count    = 50
-      start    = $redis.zrank("tags:stubs", query)
+      start    = redis.zrank("tags:stubs", query)
       return [] if !start
 
       while results.length != count
-        stubs = $redis.zrange("tags:stubs", start, start + rangelen - 1)
+        stubs = redis.zrange("tags:stubs", start, start + rangelen - 1)
         start += rangelen
         break if !stubs or stubs.length == 0
 
@@ -102,7 +102,7 @@ module Ham
     end
 
     def gifs
-      Gif.retrieve($redis.smembers("tag:#{id}:gifs"))
+      Gif.retrieve(redis.smembers("tag:#{id}:gifs"))
     end
 
     def attributes

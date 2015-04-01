@@ -1,9 +1,9 @@
-module Gifs
+module Ham
   module TestHelpers
 
     def clear_redis!
-      keys = $redis.keys '*'
-      $redis.del(*keys) if keys.any?
+      keys = Ham.redis.keys '*'
+      Ham.redis.del(*keys) if keys.any?
     end
 
   end

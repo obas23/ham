@@ -13,11 +13,11 @@ module Ham
     end
 
     it "does not create duplicates" do
-      expect($redis.zcard('widgets')).to eql 0
+      expect(Ham.redis.zcard('widgets')).to eql 0
       Widget.create "abc123"
       Widget.create "abc123"
       Widget.create "abc123"
-      expect($redis.zcard('widgets')).to eql 1
+      expect(Ham.redis.zcard('widgets')).to eql 1
     end
   end
 

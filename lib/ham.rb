@@ -8,5 +8,12 @@ require_relative "ham/web/app"
 require_relative "ham/web/api"
 
 module Ham
+  def self.redis
+    @redis ||= Redis.current
+  end
+
+  def self.redis=(redis)
+    @redis = redis
+  end
 end
 

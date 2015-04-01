@@ -12,7 +12,7 @@ Bundler.require
 require 'ham'
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }
-$redis = MockRedis.new
+Ham.redis = MockRedis.new
 
 module SinatraTestHelpers
   include Rack::Test::Methods
@@ -23,7 +23,7 @@ end
 
 RSpec.configure do |config|
   config.include SinatraTestHelpers
-  config.include Gifs::TestHelpers
+  config.include Ham::TestHelpers
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

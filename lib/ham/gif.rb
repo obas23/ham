@@ -12,8 +12,8 @@ module Ham
       tag = tag.id if tag.respond_to?(:id)
       gif = Gif.retrieve(gif)
       tag = Tag.create(tag)
-      $redis.sadd("gif:#{gif.id}:tags", tag.id)
-      $redis.sadd("tag:#{tag.id}:gifs", gif.id)
+      redis.sadd("gif:#{gif.id}:tags", tag.id)
+      redis.sadd("tag:#{tag.id}:gifs", gif.id)
       return tag
     end
 
@@ -22,13 +22,13 @@ module Ham
       tag = tag.id if tag.respond_to?(:id)
       gif = Gif.retrieve(gif)
       tag = Tag.retrieve(tag)
-      $redis.srem("gif:#{gif.id}:tags", tag.id)
-      $redis.srem("tag:#{tag.id}:gifs", gif.id)
+      redis.srem("gif:#{gif.id}:tags", tag.id)
+      redis.srem("tag:#{tag.id}:gifs", gif.id)
       return tag
     end
 
     def tags
-      Tag.retrieve($redis.smembers("gif:#{id}:tags").sort)
+      Tag.retrieve(redis.smembers("gif:#{id}:tags").sort)
     end
 
     def url
