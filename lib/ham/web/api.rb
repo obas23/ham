@@ -41,12 +41,12 @@ module Ham
       end
 
       get "/gifs/:gif" do
-        gif = Gif.retrieve(params[:gif])
+        gif = Gif.find(params[:gif])
         {gif: gif}.to_json
       end
 
       get "/gifs/:gif/tags" do
-        gif = Gif.retrieve(params[:gif])
+        gif = Gif.find(params[:gif])
         {tags: gif.tags}.to_json
       end
 

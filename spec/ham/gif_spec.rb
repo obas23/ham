@@ -41,10 +41,10 @@ module Ham
       Gif.create("gif123")
       Gif.tag("gif123", "tag123")
 
-      gif = Gif.retrieve("gif123")
+      gif = Gif.find("gif123")
       expect(gif.tags.map(&:id)).to include "tag123"
 
-      tag = Tag.retrieve("tag123")
+      tag = Tag.find("tag123")
       expect(tag.gifs.map(&:id)).to include "gif123"
     end
 
@@ -52,7 +52,7 @@ module Ham
       Gif.create("gif123")
       Gif.tag("gif123", "tag123")
 
-      gif = Gif.retrieve("gif123")
+      gif = Gif.find("gif123")
 
       expect {
         Gif.tag("gif123", "tag123")

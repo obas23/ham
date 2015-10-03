@@ -32,17 +32,17 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.retrieve' do
+  RSpec.describe Widget, '.find' do
     before { clear_redis! }
 
     it "returns the widget" do
       Widget.create "widget1"
-      expect(Widget.retrieve("widget1").id).to eql "widget1"
+      expect(Widget.find("widget1").id).to eql "widget1"
     end
 
     it "raises when the widget does not exist" do
       expect {
-        Widget.retrieve("nonexistent-widget")
+        Widget.find("nonexistent-widget")
       }.to raise_exception Ham::ObjectNotFound
     end
 
@@ -52,7 +52,7 @@ module Ham
         Widget.create "widget2"
         Widget.create "widget3"
         expect(
-          Widget.retrieve(["widget1", "widget2", "widget3"]).map(&:id)
+          Widget.find(["widget1", "widget2", "widget3"]).map(&:id)
         ).to eql ["widget1", "widget2", "widget3"]
       end
 
@@ -61,7 +61,7 @@ module Ham
         Widget.create "widget2"
 
         expect(
-          Widget.retrieve(["widget1", "nonexistent-widget1", "widget2", "nonexistent-widget2"]).map(&:id)
+          Widget.find(["widget1", "nonexistent-widget1", "widget2", "nonexistent-widget2"]).map(&:id)
         ).to eql ["widget1", "widget2"]
       end
     end

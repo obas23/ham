@@ -25,7 +25,7 @@ module Ham
       new(id)
     end
 
-    def self.retrieve(id)
+    def self.find(id)
       if id.is_a? Array
         super id.map { |id| to_id(id) }
       else
@@ -39,7 +39,7 @@ module Ham
       return [] if tokens.none?
       sets    = tokens.sort.map { |token| "token:#{token}:tags" }
       results = redis.sunion(*sets).sort_by(&:length).reverse
-      tags    = retrieve(results)
+      tags    = find(results)
       return tags
     end
 
@@ -67,7 +67,7 @@ module Ham
         end
       end
 
-      tags = retrieve(results.reverse)
+      tags = find(results.reverse)
       return tags
     end
 
@@ -102,7 +102,7 @@ module Ham
     end
 
     def gifs
-      Gif.retrieve(redis.smembers("tag:#{id}:gifs"))
+      Gif.find(redis.smembers("tag:#{id}:gifs"))
     end
 
     def attributes

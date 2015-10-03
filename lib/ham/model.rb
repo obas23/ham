@@ -26,7 +26,7 @@ module Ham
       redis.zrevrange(set, 0, -1).map { |id| new(id) }
     end
 
-    def self.retrieve(ids)
+    def self.find(ids)
       if ids.is_a? Array
         scores = ids.map { |id| self.score_for(id) }.compact
         scores.map do |score|

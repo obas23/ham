@@ -26,25 +26,25 @@ module Ham
       end
 
       get "/tags/:tag" do
-        @tag = Tag.retrieve(params[:tag])
+        @tag = Tag.find(params[:tag])
         @gifs = @tag.gifs
         erb :tag
       end
 
       delete "/:id/tags/:tag" do
-        @gif = Gif.retrieve(params[:id])
+        @gif = Gif.find(params[:id])
         Gif.untag(@gif, params[:tag])
         redirect "/#{@gif.id}"
       end
 
       post "/:id/tags" do
-        @gif = Gif.retrieve(params[:id])
+        @gif = Gif.find(params[:id])
         Gif.tag(@gif, params[:tag])
         redirect "/#{@gif.id}"
       end
 
       get "/:id" do
-        @gif = Gif.retrieve(params[:id])
+        @gif = Gif.find(params[:id])
         erb :gif
       end
     end

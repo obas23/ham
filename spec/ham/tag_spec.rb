@@ -22,17 +22,17 @@ module Ham
     end
   end
 
-  RSpec.describe Tag, '.retrieve' do
+  RSpec.describe Tag, '.find' do
     before { clear_redis! }
 
     it "locates tags case insensitively" do
       tag = Tag.create("AbCdEfG")
-      expect(Tag.retrieve("abcdefg")).to eq tag
+      expect(Tag.find("abcdefg")).to eq tag
     end
 
     it "locates tags uniformly" do
       tag = Tag.create("without-whitespace-and-junk")
-      expect(Tag.retrieve("without    whitespace and junk")).to eq tag
+      expect(Tag.find("without    whitespace and junk")).to eq tag
     end
   end
 
