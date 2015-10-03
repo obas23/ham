@@ -249,13 +249,13 @@ Shakedown.sequence do
     status 200
     {
       gifs: [{
-        id: "gif2",
-        url: "http://i.imgur.com/gif2.gif",
-        thumbnail_url: "http://i.imgur.com/gif2b.gif"
-      }, {
         id: "gif1",
         url: "http://i.imgur.com/gif1.gif",
         thumbnail_url: "http://i.imgur.com/gif1b.gif"
+      },{
+        id: "gif2",
+        url: "http://i.imgur.com/gif2.gif",
+        thumbnail_url: "http://i.imgur.com/gif2b.gif"
       }]
     }
   end
