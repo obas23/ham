@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ham
-  RSpec.describe Gif, '.search' do
+  describe Gif, '.search' do
     before { clear_redis! }
 
     it "returns gifs matching the query" do
@@ -34,7 +34,7 @@ module Ham
     end
   end
 
-  RSpec.describe Gif, '.tag' do
+  describe Gif, '.tag' do
     before { clear_redis! }
 
     it "associates the tag with the gif" do
@@ -78,7 +78,7 @@ module Ham
     end
   end
 
-  RSpec.describe Gif, '.untag' do
+  describe Gif, '.untag' do
     before { clear_redis! }
 
     it "removes the tag from the gif" do
@@ -114,7 +114,7 @@ module Ham
     end
   end
 
-  RSpec.describe Gif, '#tags' do
+  describe Gif, '#tags' do
     before { clear_redis! }
 
     it "returns its tags" do
@@ -132,7 +132,7 @@ module Ham
     end
   end
 
-  RSpec.describe Gif, '#url' do
+  describe Gif, '#url' do
     before { clear_redis! }
 
     it "returns its imgur url" do
@@ -141,7 +141,7 @@ module Ham
     end
   end
 
-  RSpec.describe Gif, '#thumbnail_url' do
+  describe Gif, '#thumbnail_url' do
     before { clear_redis! }
 
     it "returns its imgur thumbnail url" do
@@ -150,7 +150,7 @@ module Ham
     end
   end
 
-  RSpec.describe Gif, '#attributes' do
+  describe Gif, '#attributes' do
     let(:gif) { Gif.create("gif123") }
 
     it "returns its attributes as a hash" do

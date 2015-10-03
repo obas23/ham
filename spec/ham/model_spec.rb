@@ -4,7 +4,7 @@ module Ham
   class Widget < Model
   end
 
-  RSpec.describe Model, '.create' do
+  describe Model, '.create' do
     before { clear_redis! }
 
     it "returns a new instance of the class" do
@@ -21,7 +21,7 @@ module Ham
     end
   end
 
-  RSpec.describe Model, '.all' do
+  describe Model, '.all' do
     before { clear_redis! }
 
     it "returns all widgets ordered newest-first" do
@@ -32,7 +32,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.find' do
+  describe Widget, '.find' do
     before { clear_redis! }
 
     it "returns the widget" do
@@ -67,7 +67,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.score_for' do
+  describe Widget, '.score_for' do
     before { clear_redis! }
 
     it "returns the score for the id" do
@@ -81,7 +81,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.max' do
+  describe Widget, '.max' do
     before { clear_redis! }
 
     it "returns the score for last element" do
@@ -98,7 +98,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.first' do
+  describe Widget, '.first' do
     before { clear_redis! }
 
     it "returns the first element sorted by date desc" do
@@ -110,7 +110,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.last' do
+  describe Widget, '.last' do
     before { clear_redis! }
 
     it "returns the first element sorted by date asc" do
@@ -122,7 +122,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.next' do
+  describe Widget, '.next' do
     before { clear_redis! }
 
     it "returns the next model" do
@@ -135,7 +135,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '.prev' do
+  describe Widget, '.prev' do
     before { clear_redis! }
 
     it "returns the previous model" do
@@ -148,7 +148,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '#next' do
+  describe Widget, '#next' do
     before { clear_redis! }
 
     it "returns the next model" do
@@ -159,7 +159,7 @@ module Ham
     end
   end
 
-  RSpec.describe Widget, '#prev' do
+  describe Widget, '#prev' do
     before { clear_redis! }
 
     it "returns the previous model" do

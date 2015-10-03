@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ham
-  RSpec.describe Tag, '.create' do
+  describe Tag, '.create' do
     it "lowercases the id" do
       tag = Tag.create("AbCdEfG")
       expect(tag.id).to eql "abcdefg"
@@ -22,7 +22,7 @@ module Ham
     end
   end
 
-  RSpec.describe Tag, '.find' do
+  describe Tag, '.find' do
     before { clear_redis! }
 
     it "locates tags case insensitively" do
@@ -36,7 +36,7 @@ module Ham
     end
   end
 
-  RSpec.describe Tag, '.search' do
+  describe Tag, '.search' do
     before { clear_redis! }
 
     it "returns tags matching the query" do
@@ -65,7 +65,7 @@ module Ham
     end
   end
 
-  RSpec.describe Tag, '.complete' do
+  describe Tag, '.complete' do
     before { clear_redis! }
 
     it "returns tags starting with the query" do
@@ -94,14 +94,14 @@ module Ham
   end
 
 
-  RSpec.describe Tag, '#text' do
+  describe Tag, '#text' do
     it "returns its id in human readable form" do
       tag = Tag.create("a-nice-slugged-tag")
       expect(tag.text).to eql "a nice slugged tag"
     end
   end
 
-  RSpec.describe Tag, '#to_s' do
+  describe Tag, '#to_s' do
     it "returns its text" do
       tag = Tag.create("a-nice-slugged-tag")
       expect(tag).to receive(:text).and_return("tag text")
@@ -109,7 +109,7 @@ module Ham
     end
   end
 
-  RSpec.describe Tag, '#attributes' do
+  describe Tag, '#attributes' do
     let(:tag) { Tag.create("My Custom Tag") }
 
     it "returns its attributes as a hash" do
@@ -121,7 +121,7 @@ module Ham
     end
   end
 
-  RSpec.describe Tag, '#gifs' do
+  describe Tag, '#gifs' do
     before { clear_redis! }
 
     it "returns its associated gifs" do
