@@ -46,3 +46,6 @@ DEPENDENCIES
   sinatra (~> 1.4.5)
   sinatra-cross_origin (~> 0.3.2)
   thin (~> 1.6.3)
+
+BUNDLED WITH
+   1.10.2

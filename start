@@ -8,5 +8,5 @@ if [ -z "$port" ]; then
   exit 1
 fi
 
-thin -p $port -P tmp/pids/thin.$port.pid -l log/thin.$port.log -d start
+bundle exec thin -p $port -P tmp/pids/thin.$port.pid -l log/thin.$port.log -d start
 
