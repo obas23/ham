@@ -8,8 +8,6 @@ GEM
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
-    rack-test (0.6.3)
-      rack (>= 1.0)
     redis (3.2.1)
     rspec (3.2.0)
       rspec-core (~> 3.2.0)
@@ -40,7 +38,6 @@ PLATFORMS
 
 DEPENDENCIES
   mock_redis (~> 0.14.0)
-  rack-test (~> 0.6.3)
   redis (~> 3.2.1)
   rspec (~> 3.2.0)
   sinatra (~> 1.4.5)
@@ -48,4 +45,4 @@ DEPENDENCIES
   thin (~> 1.6.3)
 
 BUNDLED WITH
-   1.10.2
+   1.10.6

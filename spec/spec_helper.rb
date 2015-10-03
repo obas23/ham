@@ -1,5 +1,3 @@
-require 'rack/test'
-
 ENV['REDIS_URL'] = "redis://localhost:6379/2"
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
@@ -14,15 +12,7 @@ require 'ham'
 Dir['./spec/support/**/*.rb'].each { |f| require f }
 Ham.redis = MockRedis.new
 
-module SinatraTestHelpers
-  include Rack::Test::Methods
-  def app
-    described_class
-  end
-end
-
 RSpec.configure do |config|
-  config.include SinatraTestHelpers
   config.include Ham::TestHelpers
 
   # rspec-expectations config goes here. You can use an alternate
