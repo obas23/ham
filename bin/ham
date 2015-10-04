@@ -15,6 +15,7 @@ ARGV << '--help' if ARGV.empty?
 help_text = """
 Commands:
    server:     Start the server
+   test:       Run the tests
 
 See 'ham COMMAND --help' for more information on a specific command.
 """
