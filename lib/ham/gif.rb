@@ -65,14 +65,14 @@ module Ham
       gif = Gif.find(gif_id)
       tag = Tag.create(tag_id)
       db.execute("insert into gifs_tags (gif_id, tag_id) values (?,?)", gif.id, tag.id)
-      return true
+      return tag
     end
 
     def self.untag(gif_id, tag_id)
       gif = Gif.find(gif_id)
       tag = Tag.find(tag_id)
       db.execute("delete from gifs_tags where gif_id=? and tag_id=?", gif.id, tag.id)
-      return true
+      return tag
     end
 
     attr_reader :id
@@ -93,6 +93,18 @@ module Ham
       "http://i.imgur.com/#{id}b.gif"
     end
 
+    def next
+      @next ||= Gif.next(id)
+    end
+
+    def prev
+      @prev ||= Gif.prev(id)
+    end
+
+    def tags
+      @tags ||= Gif.tags(id)
+    end
+
     def to_param
       id
     end
@@ -105,16 +117,12 @@ module Ham
       }
     end
 
-    def next
-      @next ||= Gif.next(id)
+    def to_json(*a)
+      as_json.to_json(*a)
     end
 
-    def prev
-      @prev ||= Gif.prev(id)
-    end
-
-    def tags
-      @tags ||= Gif.tags(id)
+    def as_json(*a)
+      attributes
     end
   end
 end

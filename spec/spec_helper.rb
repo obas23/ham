@@ -5,6 +5,7 @@ require 'bundler'
 
 Bundler.require
 
+require 'rack/test'
 require 'ham'
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }
@@ -12,7 +13,15 @@ Ham.configure do |config|
   config.db = File.join(Ham.root, "db", "test.db")
 end
 
+module SinatraTestHelpers
+  include Rack::Test::Methods
+  def app
+    described_class
+  end
+end
+
 RSpec.configure do |config|
+  config.include SinatraTestHelpers
   config.include Ham::TestHelpers
 
   # rspec-expectations config goes here. You can use an alternate

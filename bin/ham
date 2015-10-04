@@ -49,6 +49,9 @@ when 'server', 's'
 
   # Start the server
   exec "bundle exec puma --port #{options.port}"
+when 'test'
+  # Run the specs
+  exec "bundle exec rspec spec"
 else
   puts "ham: No such command '#{command}'"
   exit 1

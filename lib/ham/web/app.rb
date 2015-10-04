@@ -4,9 +4,7 @@ module Ham
   module Web
     class App < Sinatra::Base
       configure do
-        enable :logging
         use Rack::MethodOverride
-        use Rack::Logger, STDOUT
       end
 
       get "/" do
@@ -53,3 +51,4 @@ module Ham
     end
   end
 end
+

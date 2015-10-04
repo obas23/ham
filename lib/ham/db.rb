@@ -39,7 +39,7 @@ module Ham
     end
 
     def ids(table)
-      execute("select id from #{table}").flatten
+      execute("select id from #{table} order by [index] desc").flatten
     end
 
     def find(table, id)

@@ -7,9 +7,6 @@ module Ham
 
       configure do
         enable :cross_origin
-        enable :logging
-        use Rack::Logger, STDOUT
-
         set :dump_errors, false
         set :raise_errors, true
         set :show_exceptions, false

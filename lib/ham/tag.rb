@@ -28,7 +28,7 @@ module Ham
     end
 
     def self.normalize(id)
-      id.to_s.strip.downcase.gsub(/[^a-z\d\s]+/,'').squeeze
+      id.to_s.strip.downcase.gsub(/[^a-z\d\s-]+/,'').gsub(/\s+/, '-')
     end
 
     def self.search(query)
@@ -58,16 +58,32 @@ module Ham
       self.id == other.id
     end
 
+    def gifs
+      @gifs ||= Tag.gifs(id)
+    end
+
+    def text
+      id.gsub(/-/, ' ')
+    end
+
     def to_param
       id
     end
 
     def attributes
-      { id: id }
+      {
+        id: id,
+        text: text
+      }
     end
 
-    def gifs
-      @gifs ||= Tag.gifs(id)
+    def to_json(*a)
+      as_json.to_json(*a)
+    end
+
+    def as_json(*a)
+      attributes
     end
   end
 end
+

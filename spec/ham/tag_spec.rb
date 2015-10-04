@@ -8,16 +8,16 @@ module Ham
       expect(tag.id).to eql "abcdefg"
 
       tag = Tag.create("  leading whitespace")
-      expect(tag.id).to eql "leading whitespace"
+      expect(tag.id).to eql "leading-whitespace"
 
       tag = Tag.create("trailing whitespace     ")
-      expect(tag.id).to eql "trailing whitespace"
+      expect(tag.id).to eql "trailing-whitespace"
 
       tag = Tag.create("   leading and trailing whitespace   ")
-      expect(tag.id).to eql "leading and trailing whitespace"
+      expect(tag.id).to eql "leading-and-trailing-whitespace"
 
       tag = Tag.create("has  internal    whitespace and 123 numbers and '%$&^ non alphanumric")
-      expect(tag.id).to eql "has internal whitespace and 123 numbers and non alphanumric"
+      expect(tag.id).to eql "has-internal-whitespace-and-123-numbers-and-non-alphanumric"
     end
   end
 
@@ -127,11 +127,20 @@ module Ham
     end
   end
 
-  describe Tag, '#attributes' do
-    let(:tag) { Tag.create("My Custom Tag") }
+  describe Tag, '#text' do
+    it "returns its id in human-readable format" do
+      tag = Tag.new("my-custom-tag")
+      expect(tag.text).to eq "my custom tag"
+    end
+  end
 
+  describe Tag, '#attributes' do
     it "returns its attributes as a hash" do
-      hash = { id: "my custom tag" }
+      tag = Tag.create("My Custom Tag")
+      hash = {
+        id: "my-custom-tag",
+        text: "my custom tag"
+      }
       expect(tag.attributes).to eq hash
     end
   end
