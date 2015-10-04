@@ -1,3 +1,5 @@
+require 'sinatra'
+
 module Ham
   module Web
     class API < Sinatra::Base

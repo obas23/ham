@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path(File.dirname(__FILE__) + "/../lib")
+require 'rubygems'
+require 'bundler'
+Bundler.require
+
+require 'ostruct'
+require 'optparse'
+require 'ham'
+
+# Display help by default if no arguments are passed
+ARGV << '--help' if ARGV.empty?
+
+help_text = """
+Commands:
+   server:     Start the server
+
+See 'ham COMMAND --help' for more information on a specific command.
+"""
+
+options = OpenStruct.new
+
+# Parse global options
+OptionParser.new { |opts|
+  opts.banner = "Usage: ham [command] [options]"
+  opts.separator help_text
+
+  opts.on "-V", "--version", "Print the version information" do
+    puts "ham version #{Ham::VERSION}"
+    exit 0
+  end
+}.order!
+
+command = ARGV.shift
+
+case command
+when 'server', 's'
+  # Set default options
+  options.port = 9292
+
+  # Parse options
+  OptionParser.new { |opts|
+    opts.banner = "Usage: ham server [options]"
+    opts.on("-p", "--port PORT", "Use port (default: #{options.port})") { |value|
+      options.port = value
+    }
+  }.parse!
+
+  # Start the server
+  exec "bundle exec puma --port #{options.port}"
+else
+  puts "ham: No such command '#{command}'"
+  exit 1
+end
+
+

@@ -54,7 +54,10 @@
   var $datalist = $("#recommended-tags");
 
 
-  $input.keyup(function() {
+  $input.keyup(function(e) {
+    // Ignore directional keys
+    if ([37, 38, 39, 40].indexOf(e.which) != -1) return;
+
     var query = $(this).val();
 
     $.ajax({

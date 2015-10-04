@@ -1,19 +1,22 @@
 require 'shakedown'
 require 'redis'
 
-REDIS_URL="redis://localhost:6379/2"
+REDIS_URL="redis://localhost:6379/1"
 
 Shakedown.configure do |config|
   config.host = "http://localhost:9293"
   config.namespace = "api"
 
+  pid = nil
+
   config.start do
-    %x[REDIS_URL=#{REDIS_URL} ./start 9293]
-    sleep 1
+    pid = Process.spawn "./bin/ham server --port 9293"
+    sleep 3
   end
 
   config.stop do
-    %x[./stop 9293]
+    puts "pid=#{pid}"
+    Process.kill('TERM', pid)
   end
 
   config.before do
