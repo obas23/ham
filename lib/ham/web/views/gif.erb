@@ -22,7 +22,7 @@
     <table>
       <% @gif.tags.each do |tag| %>
         <tr>
-          <th class="ljust"><a href="/tags/<%= tag.id %>"><%= tag.to_s %></th>
+          <th class="ljust"><a href="/tags/<%= tag.id %>"><%= tag.text %></th>
           <td class="rjust"><a href="/<%= @gif.id %>/tags/<%= tag.id %>" data-method="delete">remove</a></td>
         </tr>
       <% end %>
@@ -31,6 +31,14 @@
 </div>
 
 <script>
+  var throttle = (function(){
+    var timer = 0;
+    return function(fn){
+      clearTimeout(timer);
+      timer = setTimeout(fn, 250);
+    };
+  })();
+
   $(document).keydown(function(e) {
     // Something has focus. Input, anchor, etc.
     if ($(':focus').length) return;
@@ -53,25 +61,26 @@
   var $input = $("#tag");
   var $datalist = $("#recommended-tags");
 
-
   $input.keyup(function(e) {
     // Ignore directional keys
     if ([37, 38, 39, 40].indexOf(e.which) != -1) return;
 
     var query = $(this).val();
 
-    $.ajax({
-      type: 'get',
-      url:  '/tags/complete',
-      data: { q: query },
-      dataType: 'json'
-    }).done(function(recommended_tags) {
-      $datalist.empty();
-      recommended_tags.forEach(function(recommendation) {
-        var $option = $('<option>').val(recommendation);
-        $datalist.append($option);
+    throttle(function() {
+      $.ajax({
+        type: 'get',
+        url:  '/api/tags/complete',
+        data: { q: query },
+        dataType: 'json'
+      }).done(function(response) {
+        $datalist.empty();
+        response.tags.forEach(function(tag) {
+          var $option = $('<option>').val(tag.text);
+          $datalist.append($option);
+        });
       });
-    });
+    })
   });
 </script>
 

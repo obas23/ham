@@ -8,7 +8,7 @@
   <table>
     <% @tags.each do |tag| %>
       <tr>
-        <th class="ljust"><a href="/tags/<%= tag.id %>"><%= tag.to_s %></th>
+        <th class="ljust"><a href="/tags/<%= tag.id %>"><%= tag.text %></th>
         <td class="rjust"><%= tag.gifs.count %></td>
       </tr>
     <% end %>
