@@ -2,42 +2,56 @@ require 'spec_helper'
 
 module Ham
   describe Tag, '.create' do
-    it "lowercases the id" do
+    before { reset_db! }
+    it "normalizes the tag" do
       tag = Tag.create("AbCdEfG")
       expect(tag.id).to eql "abcdefg"
-    end
 
-    it "strips strips and consolidates whitespace to dashes" do
       tag = Tag.create("  leading whitespace")
-      expect(tag.id).to eql "leading-whitespace"
+      expect(tag.id).to eql "leading whitespace"
 
       tag = Tag.create("trailing whitespace     ")
-      expect(tag.id).to eql "trailing-whitespace"
+      expect(tag.id).to eql "trailing whitespace"
 
       tag = Tag.create("   leading and trailing whitespace   ")
-      expect(tag.id).to eql "leading-and-trailing-whitespace"
+      expect(tag.id).to eql "leading and trailing whitespace"
 
-      tag = Tag.create("has  internal    whitespace and 123 numbers and '%$&^ non-alphanumric")
-      expect(tag.id).to eql "has-internal-whitespace-and-123-numbers-and-non-alphanumric"
+      tag = Tag.create("has  internal    whitespace and 123 numbers and '%$&^ non alphanumric")
+      expect(tag.id).to eql "has internal whitespace and 123 numbers and non alphanumric"
+    end
+  end
+
+  describe Tag, '.all' do
+    before { reset_db! }
+
+    it "returns all tags ordered newest first" do
+      tag1 = Tag.create "tag1"
+      tag2 = Tag.create "tag2"
+      tag3 = Tag.create "tag3"
+      expect(Tag.all).to match_array [tag1, tag2, tag3]
     end
   end
 
   describe Tag, '.find' do
-    before { clear_redis! }
-
-    it "locates tags case insensitively" do
-      tag = Tag.create("AbCdEfG")
-      expect(Tag.find("abcdefg")).to eq tag
-    end
+    before { reset_db! }
 
     it "locates tags uniformly" do
-      tag = Tag.create("without-whitespace-and-junk")
+      tag = Tag.create("AbCdEfG")
+      expect(Tag.find("abcdefg")).to eq tag
+
+      tag = Tag.create("without whitespace and junk")
       expect(Tag.find("without    whitespace and junk")).to eq tag
+    end
+
+    it "raises when the tag does not exist" do
+      expect {
+        Tag.find("nonexistent-tag")
+      }.to raise_exception Tag::NotFound
     end
   end
 
   describe Tag, '.search' do
-    before { clear_redis! }
+    before { reset_db! }
 
     it "returns tags matching the query" do
       tag1 = Tag.create "your awesome tag"
@@ -45,7 +59,7 @@ module Ham
       tag3 = Tag.create "awesome"
       tag4 = Tag.create "tag"
 
-      expect(Tag.search('your awesome tag')).to match_array [tag1, tag3, tag2, tag4]
+      expect(Tag.search('your awesome tag')).to match_array [tag1]
       expect(Tag.search('your')).to             match_array [tag1, tag2]
       expect(Tag.search('awesome')).to          match_array [tag1, tag3]
       expect(Tag.search('tag')).to              match_array [tag1, tag4]
@@ -66,7 +80,7 @@ module Ham
   end
 
   describe Tag, '.complete' do
-    before { clear_redis! }
+    before { reset_db! }
 
     it "returns tags starting with the query" do
       tag1 = Tag.create "my awesome tag"
@@ -93,19 +107,23 @@ module Ham
     end
   end
 
+  describe Tag, '.gifs' do
+    before { reset_db! }
 
-  describe Tag, '#text' do
-    it "returns its id in human readable form" do
-      tag = Tag.create("a-nice-slugged-tag")
-      expect(tag.text).to eql "a nice slugged tag"
-    end
-  end
+    it "returns associated gifs" do
+      tag = Tag.create("mytag")
 
-  describe Tag, '#to_s' do
-    it "returns its text" do
-      tag = Tag.create("a-nice-slugged-tag")
-      expect(tag).to receive(:text).and_return("tag text")
-      expect(tag.to_s).to eql "tag text"
+      gif1 = Gif.create "gif1"
+      gif2 = Gif.create "gif2"
+      gif3 = Gif.create "gif3"
+
+      Gif.tag(gif1.id, tag.id)
+      Gif.tag(gif2.id, tag.id)
+      Gif.tag(gif3.id, tag.id)
+
+      expect(Tag.gifs(tag.id)).to include gif1
+      expect(Tag.gifs(tag.id)).to include gif2
+      expect(Tag.gifs(tag.id)).to include gif3
     end
   end
 
@@ -113,31 +131,19 @@ module Ham
     let(:tag) { Tag.create("My Custom Tag") }
 
     it "returns its attributes as a hash" do
-      hash = {
-        id: "my-custom-tag",
-        text: "my custom tag"
-      }
-      expect(tag.attributes).to eql hash
+      hash = { id: "my custom tag" }
+      expect(tag.attributes).to eq hash
     end
   end
 
   describe Tag, '#gifs' do
-    before { clear_redis! }
+    before { reset_db! }
 
-    it "returns its associated gifs" do
-      tag = Tag.create("mytag")
-
-      gif1 = Gif.create "gif1"
-      gif2 = Gif.create "gif2"
-      gif3 = Gif.create "gif3"
-
-      Gif.tag(gif1, tag)
-      Gif.tag(gif2, tag)
-      Gif.tag(gif3, tag)
-
-      expect(tag.gifs.map(&:id)).to include "gif1"
-      expect(tag.gifs.map(&:id)).to include "gif2"
-      expect(tag.gifs.map(&:id)).to include "gif3"
+    it "returns its gifs" do
+      tag1 = Tag.create "tag1"
+      gif1, gif2 = double, double
+      expect(Tag).to receive(:gifs).with("tag1").and_return([gif1, gif2])
+      expect(tag1.gifs).to match_array [gif1, gif2]
     end
   end
 end

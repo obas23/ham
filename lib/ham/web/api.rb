@@ -27,7 +27,7 @@ module Ham
         halt 404, { error: { message: "Not Found" } }.to_json
       end
 
-      error ObjectNotFound do
+      error NotFound do
         halt 404, { error: { message: "Not Found" } }.to_json
       end
 

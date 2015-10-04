@@ -6,16 +6,7 @@
 *.log
 
 /coverage/
-/db/*.sqlite3
-/db/*.sqlite3-journal
-/db/database.yml
-/public/system
+/db/*.db
 /tmp
 /spec/tmp
-
-config/secrets.yml
-
-## Environment normalisation:
-/.bundle
-/vendor/bundle
 

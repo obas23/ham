@@ -1,5 +1,5 @@
 module Ham
   Error = Class.new(StandardError)
-  ObjectNotFound = Class.new(Error)
+  NotFound = Class.new(Error)
 end
 

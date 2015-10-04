@@ -1,7 +1,4 @@
 require 'shakedown'
-require 'redis'
-
-REDIS_URL="redis://localhost:6379/1"
 
 Shakedown.configure do |config|
   config.host = "http://localhost:9293"
@@ -20,9 +17,6 @@ Shakedown.configure do |config|
   end
 
   config.before do
-    redis = Redis.new(url: REDIS_URL)
-    keys = redis.keys('*')
-    redis.del(*keys) if keys.any?
   end
 end
 

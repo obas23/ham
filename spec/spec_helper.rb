@@ -1,5 +1,3 @@
-ENV['REDIS_URL'] = "redis://localhost:6379/2"
-
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rubygems'
@@ -10,7 +8,9 @@ Bundler.require
 require 'ham'
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }
-Ham.redis = MockRedis.new
+Ham.configure do |config|
+  config.db = File.join(Ham.root, "db", "test.db")
+end
 
 RSpec.configure do |config|
   config.include Ham::TestHelpers

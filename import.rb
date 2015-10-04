@@ -7,11 +7,7 @@ Bundler.require
 
 require 'lib/ham'
 
-Redis.current = Redis.new(url: "redis://localhost:6379/1")
-Ham.redis = Redis.current
-
-keys = Ham.redis.keys '*'
-Ham.redis.del(*keys) if keys.any?
+Ham.db.reset!
 
 Gif = Struct.new(:name, :mtime)
 

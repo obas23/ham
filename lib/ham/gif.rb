@@ -1,5 +1,54 @@
 module Ham
-  class Gif < Model
+  class Gif
+    NotFound = Class.new(Ham::NotFound)
+
+    def self.db
+      Ham.db
+    end
+
+    def self.create(id)
+      db.insert(:gifs, id)
+      new(id)
+    end
+
+    def self.ids
+      db.ids(:gifs)
+    end
+
+    def self.all
+      ids.map { |id| new(id) }
+    end
+
+    def self.find(id)
+      record = db.find(:gifs, id)
+      raise NotFound, "id=#{id}" if record.nil?
+      return new(record)
+    end
+
+    def self.first
+      id = db.first(:gifs)
+      return nil if id.nil?
+      return new(id)
+    end
+
+    def self.last
+      id = db.last(:gifs)
+      return nil if id.nil?
+      return new(id)
+    end
+
+    def self.next(id)
+      id = db.next(:gifs, id) || db.first(:gifs)
+      return nil if id.nil?
+      return new(id)
+    end
+
+    def self.prev(id)
+      id = db.prev(:gifs, id) || db.last(:gifs)
+      return nil if id.nil?
+      return new(id)
+    end
+
     def self.search(query)
       return all if query.nil? or query.strip.empty?
       tags = Tag.search(query)
@@ -7,28 +56,33 @@ module Ham
       return gifs
     end
 
-    def self.tag(gif, tag)
-      gif = gif.id if gif.respond_to?(:id)
-      tag = tag.id if tag.respond_to?(:id)
-      gif = Gif.find(gif)
-      tag = Tag.create(tag)
-      redis.sadd("gif:#{gif.id}:tags", tag.id)
-      redis.sadd("tag:#{tag.id}:gifs", gif.id)
-      return tag
+    def self.tags(gif_id)
+      tag_ids = db.execute('select tag_id from gifs_tags where gif_id=?', gif_id).flatten
+      tag_ids.map { |tag_id| Tag.find(tag_id) }
     end
 
-    def self.untag(gif, tag)
-      gif = gif.id if gif.respond_to?(:id)
-      tag = tag.id if tag.respond_to?(:id)
-      gif = Gif.find(gif)
-      tag = Tag.find(tag)
-      redis.srem("gif:#{gif.id}:tags", tag.id)
-      redis.srem("tag:#{tag.id}:gifs", gif.id)
-      return tag
+    def self.tag(gif_id, tag_id)
+      gif = Gif.find(gif_id)
+      tag = Tag.create(tag_id)
+      db.execute("insert into gifs_tags (gif_id, tag_id) values (?,?)", gif.id, tag.id)
+      return true
     end
 
-    def tags
-      Tag.find(redis.smembers("gif:#{id}:tags").sort)
+    def self.untag(gif_id, tag_id)
+      gif = Gif.find(gif_id)
+      tag = Tag.find(tag_id)
+      db.execute("delete from gifs_tags where gif_id=? and tag_id=?", gif.id, tag.id)
+      return true
+    end
+
+    attr_reader :id
+
+    def initialize(id)
+      @id = id
+    end
+
+    def ==(other)
+      self.id == other.id
     end
 
     def url
@@ -50,5 +104,18 @@ module Ham
         thumbnail_url: thumbnail_url
       }
     end
+
+    def next
+      @next ||= Gif.next(id)
+    end
+
+    def prev
+      @prev ||= Gif.prev(id)
+    end
+
+    def tags
+      @tags ||= Gif.tags(id)
+    end
   end
 end
+
