@@ -44,7 +44,7 @@ module Ham
     end
 
     def self.gifs(tag_id)
-      gif_ids = db.execute('select gif_id from gifs_tags where tag_id=?', tag_id).flatten
+      gif_ids = db.execute("select gif_id from gifs_tags where tag_id='#{tag_id}'").values.flatten
       gif_ids.map { |gif_id| Gif.find(gif_id) }
     end
 
@@ -70,7 +70,7 @@ module Ham
       id
     end
 
-    def attributes
+    def attributes 
       {
         id: id,
         text: text

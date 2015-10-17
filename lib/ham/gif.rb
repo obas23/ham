@@ -57,7 +57,7 @@ module Ham
     end
 
     def self.tags(gif_id)
-      tag_ids = db.execute('select tag_id from gifs_tags where gif_id=?', gif_id).flatten
+      tag_ids = db.execute("select tag_id from gifs_tags where gif_id='#{gif_id}'").values.flatten
       tag_ids.map { |tag_id| Tag.find(tag_id) }
     end
 
