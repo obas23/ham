@@ -72,7 +72,7 @@ module Ham
     def self.untag(gif_id, tag_id)
       gif = Gif.find(gif_id)
       tag = Tag.find(tag_id)
-      db.execute("delete from gifs_tags where gif_id=? and tag_id=?", gif.id, tag.id)
+      db.execute("delete from gifs_tags where gif_id='#{gif.id}' and tag_id='#{tag.id}'")
       return tag
     end
 
