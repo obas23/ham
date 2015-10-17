@@ -57,7 +57,7 @@ module Ham
     end
 
     def self.tags(gif_id)
-      tag_ids = db.execute('select tag_id from gifs_tags where gif_id=?', gif_id).flatten
+      tag_ids = db.execute("select tag_id from gifs_tags where gif_id='#{gif_id}'").values.flatten
       tag_ids.map { |tag_id| Tag.find(tag_id) }
     end
 
@@ -65,14 +65,14 @@ module Ham
       gif = Gif.find(gif_id)
       tag = Tag.create(tag_id)
       return tag if gif.tags.include?(tag)
-      db.execute("insert into gifs_tags (gif_id, tag_id) values (?,?)", gif.id, tag.id)
+      db.execute("insert into gifs_tags (gif_id, tag_id) values ('#{gif.id}','#{tag.id}')")
       return tag
     end
 
     def self.untag(gif_id, tag_id)
       gif = Gif.find(gif_id)
       tag = Tag.find(tag_id)
-      db.execute("delete from gifs_tags where gif_id=? and tag_id=?", gif.id, tag.id)
+      db.execute("delete from gifs_tags where gif_id='#{gif.id}' and tag_id='#{tag.id}'")
       return tag
     end
 
