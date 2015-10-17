@@ -11,7 +11,11 @@ module Ham
 
     def db
       # @db ||= SQLite3::Database.new(filename)
-      @db ||= PG.connect(:host => ENV['HOST'], :dbname => ENV['DB_NAME'], :user => ENV['db_user'], :password => ENV['db_password'])
+      if (ENV['RACK_ENV'] == 'production')
+        @db ||= PG.connect(:host => ENV['HOST'], :dbname => ENV['DB_NAME'], :user => ENV['db_user'], :password => ENV['db_password'])
+      else 
+        @db ||= PG.connect(:dbname => 'ham', :user => "Mike")
+      end
     end
 
     def execute(*args, &block)
@@ -36,7 +40,7 @@ module Ham
 
     def insert(table, id)
       begin
-        db.execute("insert into #{table} (id) values (?)", id)
+        db.exec("insert into #{table} (id) values ('#{id}')")
       rescue SQLite3::ConstraintException
       end
     end

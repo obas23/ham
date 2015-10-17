@@ -65,7 +65,7 @@ module Ham
       gif = Gif.find(gif_id)
       tag = Tag.create(tag_id)
       return tag if gif.tags.include?(tag)
-      db.execute("insert into gifs_tags (gif_id, tag_id) values (?,?)", gif.id, tag.id)
+      db.execute("insert into gifs_tags (gif_id, tag_id) values ('#{gif.id}','#{tag.id}')")
       return tag
     end
 
