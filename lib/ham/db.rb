@@ -10,12 +10,7 @@ module Ham
     end
 
     def db
-      # @db ||= SQLite3::Database.new(filename)
-      if (ENV['RACK_ENV'] == 'production')
-        @db ||= PG.connect(:host => ENV['HOST'], :dbname => ENV['DB_NAME'], :user => ENV['db_user'], :password => ENV['db_password'])
-      else 
-        @db ||= PG.connect(:dbname => 'ham', :user => "Mike")
-      end
+      @db ||= PG.connect(:host => ENV['OPENSHIFT_POSTGRESQL_DB_HOST'], :dbname => 'ham', :port => ENV['OPENSHIFT_POSTGRESQL_DB_PORT'], :user => ENV['OPENSHIFT_POSTGRESQL_DB_USERNAME'], :password => ENV['OPENSHIFT_POSTGRESQL_DB_PASSWORD'])
     end
 
     def execute(*args, &block)
