@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.4'
+ruby '2.0.0'
 
 gem 'puma', '2.13.4'
 gem 'sinatra', '1.4.6', require: false
